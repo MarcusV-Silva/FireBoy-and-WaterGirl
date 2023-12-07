@@ -14,13 +14,13 @@ Marcus Vinicius da Silva
 
 Oliver Kenzo Kobayashi
 
-Rodrigo Rodrigues de Castro
+[Rodrigo Rodrigues de Castro](https://github.com/rodrigorcz)
 
 Viktor Sergio Ferreira
 
 Vitor Augusto Paiva de Brito
 
-Yazzid Alamou Bouari
+Yazid Alamou Bouari
 
 
 ## Descrição

@@ -18,9 +18,16 @@ main:
 loop:
   ;Fazer a fase atual ficar rodando aqui
   call verificaTeclaPressionada
-  ;call definePosicao
+
+  loadn r0, #1000
+  cmp r4, r0
+  cle moveBaixo
+
+  cmp r6, r0
+  cle moveBaixoW
+
   call Delay
-  ;call moveBaixo
+
   jmp loop
 
 verificaTeclaPressionada:
@@ -166,7 +173,7 @@ VaiBaixo:
 	rts
 
 VaiCima:
-	loadn r2, #160
+	loadn r2, #200
 	sub r4, r4, r2
 	rts
 
@@ -340,7 +347,7 @@ Tela1Linha19 : string "                                        "
 Tela1Linha20 : string "                                        "
 Tela1Linha21 : string "                                        "
 Tela1Linha22 : string "                                        "
-Tela1Linha23 : string "                                        "
+Tela1Linha23 : string "                      ---------         "
 Tela1Linha24 : string "                                        "
 Tela1Linha25 : string "                                        "
 Tela1Linha26 : string "----------------------------------------"

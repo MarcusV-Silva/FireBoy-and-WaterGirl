@@ -1,6 +1,8 @@
 jmp main
 
 letra: var #1
+linhaAtual: var #1
+colunaAtual: var #1
 
 main:
   loadn r1, #Tela1Linha0
@@ -8,10 +10,12 @@ main:
   call ImprimeTela
 
   loadn r4, #1002 ;posicao incial
+  call definePosicao
   call loop
 
 loop:
   call verificaTeclaPressionada
+  call definePosicao
   call Delay
   jmp loop
 
@@ -40,7 +44,26 @@ verificaTeclaPressionada:
 
   jmp verificaTeclaPressionada
 
+;Encontra e Armazena a Posicao Atual do personagem
+definePosicao:
+	push r0
+	push r1
+	push r2
 
+	loadn r0, #40
+	div r1, r4, r0
+	store linhaAtual, r1
+
+	mul r1, r1, r0
+	sub r2, r4, r1
+	store colunaAtual, r2
+
+	pop r0
+	pop r1
+	pop r2
+	rts
+
+;---------Movimentacao-------------
 moveEsquerda:
     call ApagaObj
     call VaiEsquerda
@@ -54,7 +77,6 @@ moveDireita:
     call ImprimeFire
     call Delay
     rts
-   ;jmp moveJogador
 
 moveCima:
 	call ApagaObj
@@ -72,17 +94,17 @@ moveBaixo:
 ;---------------Subrotinas--------------------
 
 ImprimeFire:
-    loadn r5, #'A'
+    loadn r5, #'&'
     loadn r2, #2304
-	add r5, r2, r5
-    outchar r5, r4  ; r0-> Posicao  r1-> "O"
+	add r5, r2, r5 	; Adicionando cor
+    outchar r5, r4  
     rts
 
 VaiBaixo:
 	loadn r2, #40
 	add r4, r4, r2
 	rts
-	
+
 VaiCima:
 	loadn r2, #40
 	sub r4, r4, r2
@@ -93,7 +115,7 @@ VaiEsquerda:
     rts
 
 VaiDireita:
-    inc r4  ; r0++
+    inc r4  
     rts
 
 ApagaObj:
@@ -152,9 +174,6 @@ ImprimeTela: 	;  Rotina de Impresao de Cenario na Tela Inteira
 	pop r0
 	rts
 				
-;---------------------
-
-	
 ;---- Inicio das Subrotinas -----
 	
 ImprimeStr2:	;  Rotina de Impresao de Mensagens:    r0 = Posicao da tela que o primeiro caractere da mensagem sera' impresso;  r1 = endereco onde comeca a mensagem; r2 = cor da mensagem.   Obs: a mensagem sera' impressa ate' encontrar "/0"

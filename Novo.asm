@@ -13,7 +13,6 @@ main:
   loadn r4, #1002 ; posicao inicial Fireboy
   loadn r6, #1034 ; posicao inicial Wategirl
 
-  call definePosicao
   call loop
 
 loop:
@@ -21,6 +20,7 @@ loop:
   call verificaTeclaPressionada
   ;call definePosicao
   call Delay
+  ;call moveBaixo
   jmp loop
 
 verificaTeclaPressionada:
@@ -209,11 +209,8 @@ DigLetra:	; Espera que uma tecla seja digitada e salva na variavel global "Letra
 	push r1
 	loadn r1, #255	; Se nao digitar nada vem 255
 
-    DigLetra_Loop:
-		inchar r0			; Le o teclado, se nada for digitado = 255
-		cmp r0, r1			;compara r0 com 255
-		jeq DigLetra_Loop	; Fica lendo ate' que digite uma tecla valida
-
+	inchar r0			; Le o teclado, se nada for digitado = 255
+		
 	store letra, r0			; Salva a tecla na variavel global "Letra"
 
 	pop r1

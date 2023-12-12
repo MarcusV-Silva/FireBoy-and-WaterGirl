@@ -11,7 +11,7 @@ main:
   call ImprimeTela
 
   loadn r4, #1002 ; posicao inicial Fireboy
-  loadn r6, #1020 ; posicao inicial Wategirl
+  loadn r6, #1034 ; posicao inicial Wategirl
 
   call definePosicao
   call loop
@@ -19,7 +19,7 @@ main:
 loop:
   ;Fazer a fase atual ficar rodando aqui
   call verificaTeclaPressionada
-  call definePosicao
+  ;call definePosicao
   call Delay
   jmp loop
 
@@ -46,6 +46,7 @@ verificaTeclaPressionada:
     cmp r0, r1
     ceq moveBaixo
 
+	;Movimento WaterGirl
 	loadn r0, #'j'
     load r1, letra
     cmp r0, r1
@@ -66,7 +67,7 @@ verificaTeclaPressionada:
     cmp r0, r1
     ceq moveBaixoW
 
-  jmp verificaTeclaPressionada
+	rts
 
 ;Encontra e Armazena a Posicao Atual do personagem
 definePosicao:
@@ -165,7 +166,7 @@ VaiBaixo:
 	rts
 
 VaiCima:
-	loadn r2, #40
+	loadn r2, #160
 	sub r4, r4, r2
 	rts
 
@@ -183,7 +184,7 @@ VaiBaixoW:
 	rts
 
 VaiCimaW:
-	loadn r2, #40
+	loadn r2, #160
 	sub r6, r6, r2
 	rts
 
@@ -208,7 +209,7 @@ DigLetra:	; Espera que uma tecla seja digitada e salva na variavel global "Letra
 	push r1
 	loadn r1, #255	; Se nao digitar nada vem 255
 
-  DigLetra_Loop:
+    DigLetra_Loop:
 		inchar r0			; Le o teclado, se nada for digitado = 255
 		cmp r0, r1			;compara r0 com 255
 		jeq DigLetra_Loop	; Fica lendo ate' que digite uma tecla valida

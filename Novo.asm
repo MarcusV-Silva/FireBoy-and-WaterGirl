@@ -7,14 +7,13 @@ main:
   loadn r2, #2560
   call ImprimeTela
 
-  loadn r4, #962 ;posicao incial
+  loadn r4, #1002 ;posicao incial
   call loop
 
 loop:
   call verificaTeclaPressionada
   call Delay
   jmp loop
-
 
 verificaTeclaPressionada:
 
@@ -29,30 +28,65 @@ verificaTeclaPressionada:
     cmp r0, r1
     ceq moveDireita
 
+	loadn r0, #'w'
+    load r1, letra
+    cmp r0, r1
+    ceq moveCima
+
+	loadn r0, #'s'
+    load r1, letra
+    cmp r0, r1
+    ceq moveBaixo
+
   jmp verificaTeclaPressionada
 
 
 moveEsquerda:
     call ApagaObj
     call VaiEsquerda
-    call ImprimeObj
+    call ImprimeFire
     call Delay
     rts
 
 moveDireita:  
     call ApagaObj
     call VaiDireita
-    call ImprimeObj
+    call ImprimeFire
     call Delay
     rts
    ;jmp moveJogador
 
+moveCima:
+	call ApagaObj
+    call VaiCima
+    call ImprimeFire
+    call Delay
+    rts
+
+moveBaixo:
+	call ApagaObj
+    call VaiBaixo
+    call ImprimeFire
+    call Delay
+    rts
 ;---------------Subrotinas--------------------
 
-ImprimeObj:
+ImprimeFire:
     loadn r5, #'A'
+    loadn r2, #2304
+	add r5, r2, r5
     outchar r5, r4  ; r0-> Posicao  r1-> "O"
     rts
+
+VaiBaixo:
+	loadn r2, #40
+	add r4, r4, r2
+	rts
+	
+VaiCima:
+	loadn r2, #40
+	sub r4, r4, r2
+	rts
 
 VaiEsquerda:
     dec r4
@@ -209,8 +243,8 @@ Tela1Linha20 : string "                                        "
 Tela1Linha21 : string "                                        "
 Tela1Linha22 : string "                                        "
 Tela1Linha23 : string "                                        "
-Tela1Linha24 : string "                                        "
-Tela1Linha25 : string "                                        "
+Tela1Linha24 : string "                            |           "
+Tela1Linha25 : string "                            g      |    "
 Tela1Linha26 : string "----------------------------------------"
 Tela1Linha27 : string "   |                               |    "
 Tela1Linha28 : string "   |                               |    "

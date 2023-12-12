@@ -336,6 +336,7 @@ Tela1Linha26 : string "                                        "
 Tela1Linha27 : string "                                        "
 Tela1Linha28 : string "                                        "
 Tela1Linha29 : string "                                        "	
+
 Telainicial : var #1200
   ;Linha 0
   static Telainicial + #0, #95

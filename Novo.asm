@@ -3,17 +3,21 @@ jmp main
 letra: var #1
 linhaAtual: var #1
 colunaAtual: var #1
+faseAtual: var #1200 ;vetor de 1200 posições
 
 main:
   loadn r1, #Tela1Linha0
-  loadn r2, #2560
+  loadn r2, #1536 
   call ImprimeTela
 
-  loadn r4, #1002 ;posicao incial
+  loadn r4, #1002 ; posicao inicial Fireboy
+  loadn r6, #1020 ; posicao inicial Wategirl
+
   call definePosicao
   call loop
 
 loop:
+  ;Fazer a fase atual ficar rodando aqui
   call verificaTeclaPressionada
   call definePosicao
   call Delay
@@ -41,6 +45,7 @@ verificaTeclaPressionada:
     load r1, letra
     cmp r0, r1
     ceq moveBaixo
+
 
   jmp verificaTeclaPressionada
 
@@ -94,7 +99,7 @@ moveBaixo:
 ;---------------Subrotinas--------------------
 
 ImprimeFire:
-    loadn r5, #'&'
+    loadn r5, #'!'
     loadn r2, #2304
 	add r5, r2, r5 	; Adicionando cor
     outchar r5, r4  

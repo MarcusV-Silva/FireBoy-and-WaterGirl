@@ -202,6 +202,7 @@ ApagaObj:
 ApagaObjW:
     outchar r2, r6  ; r0 -> Posição r2 -> " "
     rts 
+
 DigLetra:	; Espera que uma tecla seja digitada e salva na variavel global "Letra"
 	push r0
 	push r1

@@ -9,9 +9,15 @@ loop:
 	call printTelainicialScreen
 
   call DigLetra
+    loadn r0, #'w'
+    load r1, letra
+    cmp r0, r1
+    ceq verificaTeclaPressionada;
+
+  call DigLetra
 	loadn r0, #'e'
 	load r1, letra
-	cmp r0, r1	; if tecla == 'e' : tela Instrução
+	cmp r0, r1	; if tecla == 'e' : tela Instru├º├úo
 	ceq printTelainstrucaoScreen; 
 
   call DigLetra
@@ -19,7 +25,7 @@ loop:
   loadn r2, #2304
 	loadn r4, #'e'
 	load r3, letra
-	cmp r4, r3	; if tecla == 'e' : tela Instrução
+	cmp r4, r3	; if tecla == 'e' : tela Instru├º├úo
 	ceq imprimeTela; 
 
   call DigLetra
@@ -27,7 +33,7 @@ loop:
   loadn r2, #2304
 	loadn r4, #'e'
 	load r3, letra
-	cmp r4, r3	; if tecla == 'e' : tela Instrução
+	cmp r4, r3	; if tecla == 'e' : tela Instru├º├úo
 	ceq imprimeTela; 
 
   call DigLetra
@@ -37,10 +43,55 @@ loop:
 	ceq fim;
 
 
+;    call ApagaObj
+;    call RecalculaPos
+;    call ImprimeObj
+;    call Delay
+;    jmp Loop
+
+
   call Delay
 
 fim:
     halt
+
+;*******************************************************
+;                   MOVIMENTAÇÃO
+;*******************************************************
+
+verificaTeclaPressionada:
+  call DigLetra
+    loadn r0, #'w'
+    load r5, letra
+    cmp r0, r1
+    ceq moveJogador
+
+  jmp verificaTeclaPressionada
+
+
+moveJogador:  ; Move o jogador
+  ;call ApagaObj
+  call RecalculaPos
+  call ImprimeObj
+  call Delay
+  ;jmp moveJogador
+
+
+;---------------Subrotinas--------------------
+
+
+
+ApagaObj:
+    outchar r2, r4  ; r0 -> Posição r2 -> " "
+    rts
+
+RecalculaPos:
+    inc r4  ; r0++
+    rts
+
+ImprimeObj:
+    outchar r5, r4  ; r0-> Posicao  r1-> "O"
+    rts
 
 
 ;------------------------		

@@ -46,6 +46,25 @@ verificaTeclaPressionada:
     cmp r0, r1
     ceq moveBaixo
 
+	loadn r0, #'j'
+    load r1, letra
+    cmp r0, r1
+    ceq moveEsquerdaW
+
+    loadn r0, #'l'
+    load r1, letra
+    cmp r0, r1
+    ceq moveDireitaW
+
+	loadn r0, #'i'
+    load r1, letra
+    cmp r0, r1
+    ceq moveCimaW
+
+	loadn r0, #'k'
+    load r1, letra
+    cmp r0, r1
+    ceq moveBaixoW
 
   jmp verificaTeclaPressionada
 
@@ -96,6 +115,34 @@ moveBaixo:
     call ImprimeFire
     call Delay
     rts
+
+moveEsquerdaW:
+    call ApagaObjW
+    call VaiEsquerdaW
+    call ImprimeWater
+    call Delay
+    rts
+
+moveDireitaW:  
+    call ApagaObjW
+    call VaiDireitaW
+    call ImprimeWater
+    call Delay
+    rts
+
+moveCimaW:
+	call ApagaObjW
+    call VaiCimaW
+    call ImprimeWater
+    call Delay
+    rts
+
+moveBaixoW:
+	call ApagaObjW
+    call VaiBaixoW
+    call ImprimeWater
+    call Delay
+    rts
 ;---------------Subrotinas--------------------
 
 ImprimeFire:
@@ -103,6 +150,13 @@ ImprimeFire:
     loadn r2, #2304
 	add r5, r2, r5 	; Adicionando cor
     outchar r5, r4  
+    rts
+
+ImprimeWater:
+    loadn r5, #'!'
+    loadn r2, #3072 
+	add r5, r2, r5 	; Adicionando cor
+    outchar r5, r6  
     rts
 
 VaiBaixo:
@@ -123,10 +177,31 @@ VaiDireita:
     inc r4  
     rts
 
+VaiBaixoW:
+	loadn r2, #40
+	add r6, r6, r2
+	rts
+
+VaiCimaW:
+	loadn r2, #40
+	sub r6, r6, r2
+	rts
+
+VaiEsquerdaW:
+    dec r6
+    rts
+
+VaiDireitaW:
+    inc r6  
+    rts
+
 ApagaObj:
     outchar r2, r4  ; r0 -> Posição r2 -> " "
     rts 
 
+ApagaObjW:
+    outchar r2, r6  ; r0 -> Posição r2 -> " "
+    rts 
 DigLetra:	; Espera que uma tecla seja digitada e salva na variavel global "Letra"
 	push r0
 	push r1
@@ -267,8 +342,8 @@ Tela1Linha20 : string "                                        "
 Tela1Linha21 : string "                                        "
 Tela1Linha22 : string "                                        "
 Tela1Linha23 : string "                                        "
-Tela1Linha24 : string "                            |           "
-Tela1Linha25 : string "                            g      |    "
+Tela1Linha24 : string "                                        "
+Tela1Linha25 : string "                                        "
 Tela1Linha26 : string "----------------------------------------"
 Tela1Linha27 : string "   |                               |    "
 Tela1Linha28 : string "   |                               |    "

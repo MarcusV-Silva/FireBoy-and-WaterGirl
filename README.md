@@ -1,4 +1,5 @@
 # Fireboy and Watergirl
+![luta](https://github.com/MarcussSilva/FireBoy-and-WaterGirl/assets/62862399/082b7a59-f1ee-4d32-90a6-7ca542da454a)
 
 ## Autores
 

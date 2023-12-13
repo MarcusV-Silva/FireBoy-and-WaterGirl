@@ -5,10 +5,10 @@ posicaoFireBoy: var #1
 posicaoWaterGirl: var #1
 linhaAtual: var #1
 colunaAtual: var #1
-parede: var #1200 ;vetor de 1200 posições
+faseAtual: var #1200 ;vetor de 1200 posições
 
 main:
-	
+
 	loadn r1, #Tela1Linha0
     loadn r2, #256
     call ImprimeTela
@@ -20,26 +20,19 @@ main:
     loadn r1, #Tela4Linha0
     loadn r2, #0
     call ImprimeTela
-	
- 	call pressioneE
 
-	loadn r3, #923
-	store posicaoFireBoy, r3	;posicao inicial Fireboy
-    loadn r2, #2304				;Cor que sera impressa
-    loadn r5, #'$'				;Caracter que sera impresso
-    call ImprimePersonagem	;Usa r2, r3 e r4
 
-	;loadn r3, #1003
- 	store posicaoWaterGirl, r3	;posicao inicial Wategirl
-    loadn r2, #3072				;Cor que sera imprimida
-    loadn r5, #'$'				;Caracter  que sera imprimido
-    call ImprimePersonagem	;Usa r2, r3 e r4
- 	
-	call Nivel1
+	loadn r0, #1002
+	store posicaoFireBoy, r0		; posicao inicial Fireboy
 
-Nivel1:
+	loadn r1, #1024
+ 	store posicaoWaterGirl, r1		; posicao inicial Wategirl
+
+	call loop
+
+loop:
 	;Lê o teclado e atualiza posição
-	call movimentaPersonagens
+	call verificaTeclaPressionada
 	;Atualiza linha e coluna do FireBoy(por enquanto) *Testar*
 	call atualizaPosicao
 
@@ -47,31 +40,20 @@ Nivel1:
 	call gravidade
 
 	call Delay
-	jmp Nivel1
-
-pressioneE:
-    
-    call DigLetra	;Coloca a letra digitada na variável letra
-    load r1, letra	;Carrega a letra digitada
-
-    loadn r0, #'e'
-    cmp r0, r1
-    jne pressioneE		;compare not equal => se a tecla não foi digitada continua no loop
-    call imprimeNivel
+	jmp loop
 
 gravidade:
 	push r0
 	push r2
 	push r5
 
-	loadn r0, #1080				;Linha do chão (pode ser setado fora daqui se apagarmos essa linha)
+	loadn r0, #1160				;Linha do chão (pode ser setado fora daqui se apagarmos essa linha)
 
 	loadn r2, #2304				;Cor que sera impressa
     load r3, posicaoFireBoy		;Posição da impressao
-    loadn r5, #'$'				;Caracter que sera impresso
+    loadn r5, #'!'				;Caracter que sera impresso
 
-    cmp r3, r0					;Se não passar do chão
-    cle moveBaixo				;Move para baixo
+    call moveBaixo				;Move para baixo
     store posicaoFireBoy, r3	;Atualiza a posição do FireBoy
 
 
@@ -79,8 +61,7 @@ gravidade:
     load r3, posicaoWaterGirl	;Posição da impressao
     loadn r5, #'$'				;Caracter que sera imprimido
 
-    cmp r3, r0					;Se não passar do chão
-    cle moveBaixo				;Move para baixo
+    call moveBaixo				;Move para baixo
     store posicaoWaterGirl, r3	;Atualiza a posição da WaterGirl
 
 	pop r5
@@ -88,16 +69,16 @@ gravidade:
 	pop r0
 	rts
 
-movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
+verificaTeclaPressionada:
 
-    push r3			;Protege r3 para ser usado no calculo da nova posição ;Talvez possamos retirar isso
+    push r3			;Protege r3 para ser usado no calculo da nova posição
     call DigLetra	;Coloca a letra digitada na variável letra
     load r1, letra	;Carrega a letra digitada
-
+    
 	;Movimento FireBoy
     loadn r2, #2304				;Cor que sera impressa
     load r3, posicaoFireBoy		;Posição da impressao
-    loadn r5, #'$'				;Caracter que sera impresso
+    loadn r5, #'!'				;Caracter que sera impresso
 
     loadn r0, #'a'
     cmp r0, r1
@@ -114,14 +95,18 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
 	loadn r0, #'s'
     cmp r0, r1
     ceq moveBaixo
-    
+
+    loadn r0, #'e'
+    cmp r0, r1
+    ceq imprimeNivel
+
 	store posicaoFireBoy, r3	;Atualiza a variável de posição do Fireboy
 
 	;Movimento WaterGirl
     loadn r2, #3072				;Cor que sera imprimida
     load r3, posicaoWaterGirl	;Posição da impressao
     loadn r5, #'$'				;Caracter  que sera imprimido
-
+    
 	loadn r0, #'j'
     cmp r0, r1
     ceq moveEsquerda
@@ -190,7 +175,36 @@ moveCima:
 
 moveBaixo:
     call ApagaObj			;Usa r3
-    call VaiBaixo			;Usa r3
+    
+    ; r1 = r2, r3 = r4, r4 = r5, r2 = r6
+    
+    push r2
+    push r4
+    push r5
+    push r6
+    push r7
+    
+    loadn r2, #0
+	loadn r4, #Tela6Linha0
+	loadn r5, #0
+	loadn r6, #40
+	
+	;----Testa colisão com o chão--------
+	add r5, r3, r6  ; R4 = pos de baixo do mario
+	div r2, r5, r6  ;R1 = posMario de baixo / 40 = linha de baixo
+	add r4, r4, r2  ;R3 = R3 + R1 = 1º posicao da string abaixo dele
+	add r4, r4, r5  ;R3 = R3 + 41 = 
+	loadn r5, #37 ; #
+	loadi r7, r4
+	cmp r5, r7		;if ('#' == R6) para de cair
+    cne VaiBaixo			;Usa r3
+    
+    pop r7
+    pop r6
+    pop r5
+    pop r4
+    pop r2
+    
     call ImprimePersonagem	;Usa r2, r3 e r4
     call Delay
     rts
@@ -198,10 +212,9 @@ moveBaixo:
 ;---------------Subrotinas--------------------
 
 ;Imprime o personagem
-ImprimePersonagem:	;r2: Cor; r3: Posição ;r5: Caracter
-	loadn r5, #'$'
-	add r5, r2, r5
-    outchar r5, r3
+ImprimePersonagem:	;r2: Cor
+	add r5, r2, r5 	;r3: Posição
+    outchar r5, r3  ;r5: Caracter
     rts
 
 ;Funções que fazem o personagem se movimentar
@@ -230,6 +243,7 @@ ApagaObj:
     outchar r0, r3
     rts
 
+
 DigLetra:	; Espera que uma tecla seja digitada e salva na variavel global "Letra"
 	push r0
 	push r1
@@ -253,10 +267,8 @@ imprimeNivel:
 	call ImprimeTela
 
 	loadn r1, #Tela6Linha0
-	loadn r2, #2048
+	loadn r2, #0
 	call ImprimeTela
-	
-	
 
 ImprimeTela: 	;  Rotina de Impresao de Cenario na Tela Inteira
 	;  r1 = endereco onde comeca a primeira linha do Cenario
@@ -294,8 +306,8 @@ ImprimeTela: 	;  Rotina de Impresao de Cenario na Tela Inteira
 	rts
 
 ImprimeEApaga: 	;  Rotina de Impresao de Cenario na Tela Inteira
-	;  r1 = endereco onde comeca a primeira linha do Cenario
-	;  r2 = cor do Cenario para ser impresso
+		;  r1 = endereco onde comeca a primeira linha do Cenario
+		;  r2 = cor do Cenario para ser impresso
 
 	push r0	; protege o r3 na pilha para ser usado na subrotina
 	push r1	; protege o r1 na pilha para preservar seu valor
@@ -396,6 +408,7 @@ ImprimeEApaga: 	;  Rotina de Impresao de Cenario na Tela Inteira
 	pop r0
 	rts
 
+
 ;---- Inicio das Subrotinas -----
 
 ImprimeStr2:	;  Rotina de Impresao de Mensagens:    r0 = Posicao da tela que o primeiro caractere da mensagem sera' impresso;  r1 = endereco onde comeca a mensagem; r2 = cor da mensagem.   Obs: a mensagem sera' impressa ate' encontrar "/0"
@@ -406,14 +419,17 @@ ImprimeStr2:	;  Rotina de Impresao de Mensagens:    r0 = Posicao da tela que o p
 	push r4	; protege o r4 na pilha para ser usado na subrotina
 	push r5	; protege o r5 na pilha para ser usado na subrotina
 	push r6	; protege o r6 na pilha para ser usado na subrotina
+	push r7 ; protege o r6 na pilha para ser usado na subrotina
 
-
+	loadn r7, #faseAtual
 	loadn r3, #'\0'	; Criterio de parada
 	loadn r5, #' '	; Espaco em Branco
 	ImprimeStr2_Loop:
 		loadi r4, r1
 		cmp r4, r3		; If (Char == \0)  vai Embora
 		jeq ImprimeStr2_Sai
+		storei r7, r4
+		inc r7
 		cmp r4, r5		; If (Char == ' ')  vai Pula outchar do espaco para na apagar outros caracteres
 		jeq ImprimeStr2_Skip
 		add r4, r2, r4	; Soma a Cor
@@ -426,6 +442,7 @@ ImprimeStr2:	;  Rotina de Impresao de Mensagens:    r0 = Posicao da tela que o p
 		jmp ImprimeStr2_Loop
 
    ImprimeStr2_Sai:
+    pop r7
 	pop r6	; Resgata os valores dos registradores utilizados na Subrotina da Pilha
 	pop r5
 	pop r4
@@ -480,7 +497,7 @@ Delay:
 
 	Loadn R1, #15
    	Delay_volta2:
-		Loadn R0, #40000		; Intensidade do Delay
+		Loadn R0, #10000		; Intensidade do Delay
 
    		Delay_volta1:
 			dec R0

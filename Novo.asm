@@ -9,13 +9,7 @@ faseAtual: var #1200 ;vetor de 1200 posições
 
 main:
 
-	loadn r0, #1002
-	store posicaoFireBoy, r0		; posicao inicial Fireboy
-
-	loadn r1, #1024
- 	store posicaoWaterGirl, r1		; posicao inicial Wategirl
-
- 	loadn r1, #Tela1Linha0
+	loadn r1, #Tela1Linha0
     loadn r2, #256
     call ImprimeTela
 
@@ -27,18 +21,18 @@ main:
     loadn r2, #0
     call ImprimeTela
 
+
+	loadn r0, #1002
+	store posicaoFireBoy, r0		; posicao inicial Fireboy
+
+	loadn r1, #1024
+ 	store posicaoWaterGirl, r1		; posicao inicial Wategirl
+
 	call loop
 
 loop:
 	;Lê o teclado e atualiza posição
 	call verificaTeclaPressionada
-
-
-	;Fase atual
-	loadn r1, #Tela1Linha0	;Tela
-	loadn r2, #0 			;Cor adicional
-	call ImprimeTela
-
 	;Atualiza linha e coluna do FireBoy(por enquanto) *Testar*
 	call atualizaPosicao
 

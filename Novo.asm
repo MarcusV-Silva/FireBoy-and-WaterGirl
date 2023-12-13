@@ -246,7 +246,7 @@ imprimeNivel:
 	call ImprimeTela
 
 	loadn r1, #Tela6Linha0
-	loadn r2, #0
+	loadn r2, #2048
 	call ImprimeTela
 
 ImprimeTela: 	;  Rotina de Impresao de Cenario na Tela Inteira

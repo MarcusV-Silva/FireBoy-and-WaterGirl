@@ -1,233 +1,231 @@
 jmp main
 
 letra: var #1
+posicaoFireBoy: var #1
+posicaoWaterGirl: var #1
 linhaAtual: var #1
 colunaAtual: var #1
 faseAtual: var #1200 ;vetor de 1200 posições
 
 main:
-  loadn r1, #Tela1Linha0
-  loadn r2, #1536 
-  call ImprimeTela
 
-  loadn r4, #1002 ; posicao inicial Fireboy
-  loadn r6, #1034 ; posicao inicial Wategirl
+	loadn r0, #1002
+	store posicaoFireBoy, r0		; posicao inicial Fireboy
+	
+	loadn r1, #1024
+ 	store posicaoWaterGirl, r1		; posicao inicial Wategirl
 
-  call loop
+ 	loadn r1, #Tela1Linha0
+	loadn r2, #1536
+	call ImprimeTela
+	call loop
 
 loop:
-  ;Fazer a fase atual ficar rodando aqui
-  call verificaTeclaPressionada
+	;Lê o teclado e atualiza posição
+	call verificaTeclaPressionada
+	
+	
+	;Fase atual
+	loadn r1, #Tela1Linha0	;Tela
+	loadn r2, #0 			;Cor adicional
+	call ImprimeTela
 
-  loadn r0, #1000
-  cmp r4, r0
-  cle moveBaixo
+	;Atualiza linha e coluna do FireBoy(por enquanto) *Testar*
+	call atualizaPosicao
+	
+	;Faz o FireBoy e a WaterGirl caírem
+	call gravidade
+		
+	call Delay
+	jmp loop
 
-  cmp r6, r0
-  cle moveBaixoW
-
-  call Delay
-
-  jmp loop
+gravidade:
+	push r0
+	push r2
+	push r5
+	
+	loadn r0, #1000				;Linha do chão (pode ser setado fora daqui se apagarmos essa linha)
+	
+	loadn r2, #2304				;Cor que sera impressa
+    load r3, posicaoFireBoy		;Posição da impressao
+    loadn r5, #'$'				;Caracter que sera impresso
+    
+    cmp r3, r0					;Se não passar do chão
+    cle moveBaixo				;Move para baixo
+    store posicaoFireBoy, r3	;Atualiza a posição do FireBoy
+    
+	
+    loadn r2, #3072				;Cor que sera imprimida
+    load r3, posicaoWaterGirl	;Posição da impressao
+    loadn r5, #'$'				;Caracter que sera imprimido
+        
+    cmp r3, r0					;Se não passar do chão
+    cle moveBaixo				;Move para baixo
+    store posicaoWaterGirl, r3	;Atualiza a posição da WaterGirl
+    
+	pop r5
+	pop r2
+	pop r0
+	rts
 
 verificaTeclaPressionada:
 
-    call DigLetra
+    push r3			;Protege r3 para ser usado no calculo da nova posição
+    call DigLetra	;Coloca a letra digitada na variável letra
+    load r1, letra	;Carrega a letra digitada
+    
+	;Movimento FireBoy
+    loadn r2, #2304				;Cor que sera impressa
+    load r3, posicaoFireBoy		;Posição da impressao
+    loadn r5, #'$'				;Caracter que sera impresso
+    
     loadn r0, #'a'
-    load r1, letra
     cmp r0, r1
     ceq moveEsquerda
-
+    
     loadn r0, #'d'
-    load r1, letra
     cmp r0, r1
     ceq moveDireita
-
+	
 	loadn r0, #'w'
-    load r1, letra
     cmp r0, r1
     ceq moveCima
-
+	
 	loadn r0, #'s'
-    load r1, letra
     cmp r0, r1
     ceq moveBaixo
-
+    
+	store posicaoFireBoy, r3	;Atualiza a variável de posição do Fireboy
+    
 	;Movimento WaterGirl
+    loadn r2, #3072				;Cor que sera imprimida
+    load r3, posicaoWaterGirl	;Posição da impressao
+    loadn r5, #'$'				;Caracter  que sera imprimido
+    
 	loadn r0, #'j'
-    load r1, letra
     cmp r0, r1
-    ceq moveEsquerdaW
-
+    ceq moveEsquerda
+    
     loadn r0, #'l'
-    load r1, letra
     cmp r0, r1
-    ceq moveDireitaW
-
+    ceq moveDireita
+    
 	loadn r0, #'i'
-    load r1, letra
     cmp r0, r1
-    ceq moveCimaW
-
+    ceq moveCima
+    
 	loadn r0, #'k'
-    load r1, letra
     cmp r0, r1
-    ceq moveBaixoW
-
+    ceq moveBaixo
+    
+   	store posicaoWaterGirl, r3	;Atualiza a variável de posição da WhaterGirl
+    
+    pop r3	;Recupera o valor anterior do r3
 	rts
 
-;Encontra e Armazena a Posicao Atual do personagem
-definePosicao:
+;Encontra e Armazena a Posicao Atual dos personagens
+atualizaPosicao:
 	push r0
 	push r1
 	push r2
+	push r3
 
 	loadn r0, #40
-	div r1, r4, r0
+	load r3, posicaoFireBoy
+	
+	div r1, r3, r0
 	store linhaAtual, r1
 
 	mul r1, r1, r0
-	sub r2, r4, r1
+	sub r2, r3, r1
 	store colunaAtual, r2
 
 	pop r0
 	pop r1
 	pop r2
+	pop r4
 	rts
 
 ;---------Movimentacao-------------
 moveEsquerda:
-    call ApagaObj
-    call VaiEsquerda
-    call ImprimeFire
+    call ApagaObj			;Usa r3
+    call VaiEsquerda		;Usa r3
+    call ImprimePersonagem	;Usa r2, r3 e r4
     call Delay
     rts
 
 moveDireita:  
-    call ApagaObj
-    call VaiDireita
-    call ImprimeFire
+    call ApagaObj			;Usa r3
+    call VaiDireita			;Usa r3
+    call ImprimePersonagem	;Usa r2, r3 e r4
     call Delay
     rts
 
 moveCima:
-	call ApagaObj
-    call VaiCima
-    call ImprimeFire
+    call ApagaObj			;Usa r3
+    call VaiCima			;Usa r3
+    call ImprimePersonagem	;Usa r2, r3 e r4
     call Delay
     rts
 
 moveBaixo:
-	call ApagaObj
-    call VaiBaixo
-    call ImprimeFire
+    call ApagaObj			;Usa r3
+    call VaiBaixo			;Usa r3
+    call ImprimePersonagem	;Usa r2, r3 e r4
     call Delay
     rts
 
-moveEsquerdaW:
-    call ApagaObjW
-    call VaiEsquerdaW
-    call ImprimeWater
-    call Delay
-    rts
-
-moveDireitaW:  
-    call ApagaObjW
-    call VaiDireitaW
-    call ImprimeWater
-    call Delay
-    rts
-
-moveCimaW:
-	call ApagaObjW
-    call VaiCimaW
-    call ImprimeWater
-    call Delay
-    rts
-
-moveBaixoW:
-	call ApagaObjW
-    call VaiBaixoW
-    call ImprimeWater
-    call Delay
-    rts
 ;---------------Subrotinas--------------------
 
-ImprimeFire:
-    loadn r5, #'!'
-    loadn r2, #2304
-	add r5, r2, r5 	; Adicionando cor
-    outchar r5, r4  
+;Imprime o personagem
+ImprimePersonagem:	;r2: Cor
+	add r5, r2, r5 	;r3: Posição
+    outchar r5, r3  ;r5: Caracter
     rts
 
-ImprimeWater:
-    loadn r5, #'$'
-    loadn r2, #3072 
-	add r5, r2, r5 	; Adicionando cor
-    outchar r5, r6  
-    rts
-
+;Funções que fazem o personagem se movimentar
+;r3: posição do personagem
 VaiBaixo:
-	loadn r2, #40
-	add r4, r4, r2
+	loadn r1, #40
+	add r3, r3, r1
 	rts
-
+	
 VaiCima:
-	loadn r2, #200
-	sub r4, r4, r2
+	loadn r1, #160
+	sub r3, r3, r1
 	rts
-
+	
 VaiEsquerda:
-    dec r4
+    dec r3
     rts
-
+    
 VaiDireita:
-    inc r4  
+    inc r3 
     rts
-
-VaiBaixoW:
-	loadn r2, #40
-	add r6, r6, r2
-	rts
-
-VaiCimaW:
-	loadn r2, #160
-	sub r6, r6, r2
-	rts
-
-VaiEsquerdaW:
-    dec r6
-    rts
-
-VaiDireitaW:
-    inc r6  
-    rts
-
+    
+;Apaga um personagem na posição r3
 ApagaObj:
-    outchar r2, r4  ; r0 -> Posição r2 -> " "
+	loadn r0, #' '
+    outchar r0, r3
     rts 
 
-ApagaObjW:
-    outchar r2, r6  ; r0 -> Posição r2 -> " "
-    rts 
 
 DigLetra:	; Espera que uma tecla seja digitada e salva na variavel global "Letra"
 	push r0
 	push r1
-	loadn r1, #255	; Se nao digitar nada vem 255
+	loadn r1, #255		; Se nao digitar nada vem 255
 
 	inchar r0			; Le o teclado, se nada for digitado = 255
 		
-	store letra, r0			; Salva a tecla na variavel global "Letra"
+	store letra, r0		; Salva a tecla na variavel global "Letra"
 
 	pop r1
 	pop r0
 	rts
 
-
 ImprimeTela: 	;  Rotina de Impresao de Cenario na Tela Inteira
-		;  r1 = endereco onde comeca a primeira linha do Cenario
-		;  r2 = cor do Cenario para ser impresso
+	;  r1 = endereco onde comeca a primeira linha do Cenario
+	;  r2 = cor do Cenario para ser impresso
 
 	push r0	; protege o r3 na pilha para ser usado na subrotina
 	push r1	; protege o r1 na pilha para preservar seu valor
@@ -237,11 +235,11 @@ ImprimeTela: 	;  Rotina de Impresao de Cenario na Tela Inteira
 	push r5	; protege o r5 na pilha para ser usado na subrotina
 	push r6	; protege o r6 na pilha para ser usado na subrotina
 
-	loadn R0, #0  	; posicao inicial tem que ser o comeco da tela!
-	loadn R3, #40  	; Incremento da posicao da tela!
-	loadn R4, #41  	; incremento do ponteiro das linhas da tela
-	loadn R5, #1200 ; Limite da tela!
-	loadn R6, #Tela1Linha0	; Endereco onde comeca a primeira linha do cenario!!
+	loadn r0, #0  	; posicao inicial tem que ser o comeco da tela!
+	loadn r3, #40  	; Incremento da posicao da tela!
+	loadn r4, #41  	; incremento do ponteiro das linhas da tela
+	loadn r5, #1200 ; Limite da tela!
+	loadn r6, #Tela1Linha0	; Endereco onde comeca a primeira linha do cenario!!
 	
    ImprimeTela2_Loop:
 		call ImprimeStr2
@@ -303,7 +301,6 @@ ImprimeStr2:	;  Rotina de Impresao de Mensagens:    r0 = Posicao da tela que o p
 ;                       DELAY
 ;********************************************************		
 
-
 Delay:
 	;Utiliza Push e Pop para nao afetar os Ristradores do programa principal
 	push R0
@@ -322,7 +319,7 @@ Delay:
 	pop R1
 	pop R0
 	
-	rts							; Return
+	rts						; Return
 
 Tela1Linha0  : string "                                        "
 Tela1Linha1  : string "             TESTE INICIAL              "
@@ -350,7 +347,7 @@ Tela1Linha22 : string "                                        "
 Tela1Linha23 : string "                      ---------         "
 Tela1Linha24 : string "                                        "
 Tela1Linha25 : string "                                        "
-Tela1Linha26 : string "----------------------------------------"
+Tela1Linha26 : string "}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}"
 Tela1Linha27 : string "   |                               |    "
 Tela1Linha28 : string "   |                               |    "
-Tela1Linha29  :string "   |                               |    " 	
+Tela1Linha29  :string "   |                               |    " 

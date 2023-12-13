@@ -34,8 +34,6 @@ loop:
 	;Lê o teclado e atualiza posição
 	call verificaTeclaPressionada
 
-	call imprimeNivel
-
 	;Atualiza linha e coluna do FireBoy(por enquanto) *Testar*
 	call atualizaPosicao
 

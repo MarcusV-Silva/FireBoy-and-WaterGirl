@@ -161,7 +161,7 @@ ImprimeFire:
     rts
 
 ImprimeWater:
-    loadn r5, #'!'
+    loadn r5, #'$'
     loadn r2, #3072 
 	add r5, r2, r5 	; Adicionando cor
     outchar r5, r6  
@@ -311,7 +311,7 @@ Delay:
 	
 	Loadn R1, #15   
    	Delay_volta2:				
-		Loadn R0, #60000		; Intensidade do Delay
+		Loadn R0, #40000		; Intensidade do Delay
 		
    		Delay_volta1: 
 			dec R0					

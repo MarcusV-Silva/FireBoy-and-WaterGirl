@@ -28,7 +28,7 @@ main:
     loadn r5, #'$'				;Caracter que sera impresso
     call ImprimePersonagem	;Usa r2, r3 e r4
 
-	loadn r3, #1003
+	loadn r3, #1083
  	store posicaoWaterGirl, r3	;posicao inicial Wategirl
     loadn r2, #3072				;Cor que sera imprimida
     loadn r5, #'$'				;Caracter  que sera imprimido
@@ -69,8 +69,7 @@ gravidade:
     load r3, posicaoFireBoy		;Posição da impressao
     loadn r5, #'$'				;Caracter que sera impresso
 
-    cmp r3, r0					;Se não passar do chão
-    cle moveBaixo				;Move para baixo
+    call moveBaixo				;Move para baixo
     store posicaoFireBoy, r3	;Atualiza a posição do FireBoy
 
 

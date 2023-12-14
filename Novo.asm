@@ -5,6 +5,9 @@ letra: var #1
 posicaoFireBoy: var #1
 posicaoWaterGirl: var #1
 
+saltarFireBoy: var #1
+saltarWaterGirl: var #1
+
 linhaAtual: var #1
 colunaAtual: var #1
 
@@ -14,7 +17,6 @@ porta2FaseAtual: var #1 ;276 --
 numFaseAtual: var #1
 
 telaAtual: var #1
-
 
 main:
 	loadn r0, #1 
@@ -40,33 +42,37 @@ main:
 	
  	call pressioneE
 
+
+	loadn r3, #1043
+	store posicaoFireBoy, r3	;posicao inicial Fireboy
+  loadn r2, #2304				;Cor que sera impressa
+  loadn r5, #'!'				;Caracter que sera impresso
+  call ImprimePersonagem		;Usa r2, r3 e r4
+    
+ 	load r4, saltarFireBoy
+	call zeraSalto	;			Inicializa a variável salto como 0
+	
+	loadn r3, #883
+
 	loadn r1, #Tela6Linha0
 	store telaAtual, r1
 
 	loadn r3, #923
-	store posicaoFireBoy, r3	;posicao inicial Fireboy
-    loadn r2, #2304				;Cor que sera impressa
-    loadn r5, #'!'				;Caracter que sera impresso
-    call ImprimePersonagem	    ;Usa r2, r3 e r4
-
-	loadn r3, #1083
  	store posicaoWaterGirl, r3	;posicao inicial Wategirl
-    loadn r2, #1536				;Cor que sera imprimida
-    loadn r5, #'$'				;Caracter  que sera imprimido
-    call ImprimePersonagem	    ;Usa r2, r3 e r4
- 	
-	call Nivel1
+  loadn r2, #1536				;Cor que sera imprimida
+  loadn r5, #'$'				;Caracter  que sera imprimido
+  call ImprimePersonagem		;Usa r2, r3 e r4
+	
+ 	load r4, saltarWaterGirl
+	call zeraSalto	;Inicializa a variável salto como 0
+	
+	jmp Nivel1
 
 Nivel1:
-    call verificaPorta
-	;Lê o teclado e atualiza posição
+  call verificaPorta
 	call movimentaPersonagens
-	;Atualiza linha e coluna do FireBoy(por enquanto) *Testar*
-	;call atualizaPosicao
-
-	;Faz o FireBoy e a WaterGirl caírem
+	call Delay
 	call gravidade
-
 	call Delay
 
 	jmp Nivel1
@@ -139,7 +145,7 @@ iniciaNivel2:
 	loadn r3, #1082
 	store posicaoFireBoy, r3	;posicao inicial Fireboy
     loadn r2, #2304				;Cor que sera impressa
-    loadn r5, #'$'				;Caracter que sera impresso
+    loadn r5, #'!'				;Caracter que sera impresso
     call ImprimePersonagem	;Usa r2, r3 e r4
 
 	loadn r3, #1117
@@ -162,31 +168,38 @@ pressioneE:
 
 gravidade:
 	push r0
+	push r1
 	push r2
 	push r5
-
-	loadn r0, #1080				;Linha do chão (pode ser setado fora daqui se apagarmos essa linha)
+	
 
 	loadn r2, #2304				;Cor que sera impressa
-    load r3, posicaoFireBoy		;Posição da impressao
-    loadn r5, #'!'				;Caracter que sera impresso
+  load r3, posicaoFireBoy		;Posição da impressao
+  loadn r5, #'!'				;Caracter que sera impresso
+  load r4, saltarFireBoy
 
-    call moveBaixo				;Move para baixo
-    store posicaoFireBoy, r3	;Atualiza a posição do FireBoy
+	loadn r0, #0
+  cmp r4, r0
+  ceq moveBaixo				;Move para baixo
+  store posicaoFireBoy, r3	;Atualiza a posição do FireBoy
 
-    loadn r2, #1536  			;Cor que sera imprimida
-    load r3, posicaoWaterGirl	;Posição da impressao
-    loadn r5, #'$'				;Caracter que sera imprimido
+  loadn r2, #1536  			;Cor que sera imprimida
+  load r3, posicaoWaterGirl	;Posição da impressao
+  loadn r5, #'$'				;Caracter que sera imprimido
+  load r4, saltarWaterGirl
 
-    call moveBaixo				;Move para baixo
-    store posicaoWaterGirl, r3	;Atualiza a posição da WaterGirl
+	loadn r0, #0
+  cmp r4, r0
+  ceq moveBaixo				;Move para baixo
+  store posicaoWaterGirl, r3	;Atualiza a posição da WaterGirl
 
 	pop r5
 	pop r2
+	pop r1
 	pop r0
 	rts
-
-movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
+	
+movimentaPersonagens:	;Usa r0, r1, r2, r3, r4, r5
 
     push r3			;Protege r3 para ser usado no calculo da nova posição ;Talvez possamos retirar isso
     call DigLetra	;Coloca a letra digitada na variável letra
@@ -196,6 +209,7 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
     loadn r2, #2304				;Cor que sera impressa
     load r3, posicaoFireBoy		;Posição da impressao
     loadn r5, #'!'				;Caracter que sera impresso
+    load r4, saltarFireBoy
 
     loadn r0, #'a'
     cmp r0, r1
@@ -207,18 +221,20 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
 
 	loadn r0, #'w'
     cmp r0, r1
-    ceq moveCima
-
-	loadn r0, #'s'
-    cmp r0, r1
-    ceq moveBaixo
+    ceq ativaSalto
     
+    loadn r0, #0
+    cmp r0, r4
+    cne moveCima
+    
+    store saltarFireBoy, r4
 	store posicaoFireBoy, r3	;Atualiza a variável de posição do Fireboy
 
 	;Movimento WaterGirl
     loadn r2, #1536				;Cor que sera imprimida
     load r3, posicaoWaterGirl	;Posição da impressao
     loadn r5, #'$'				;Caracter  que sera imprimido
+    load r4, saltarWaterGirl
 
 	loadn r0, #'j'
     cmp r0, r1
@@ -230,40 +246,38 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
 
 	loadn r0, #'i'
     cmp r0, r1
-    ceq moveCima
+    ceq ativaSalto
+    
+    loadn r0, #0
+    cmp r0, r4
+    cne moveCima
 
-	loadn r0, #'k'
-    cmp r0, r1
-    ceq moveBaixo
-
+    store saltarWaterGirl, r4
    	store posicaoWaterGirl, r3	;Atualiza a variável de posição da WhaterGirl
 
     pop r3	;Recupera o valor anterior do r3
 	rts
 
-;Encontra e Armazena a Posicao Atual dos personagens
-atualizaPosicao:
+ativaSalto:
 	push r0
-	push r1
-	push r2
-	push r3
-
-	loadn r0, #40
-	load r3, posicaoFireBoy
-
-	div r1, r3, r0
-	store linhaAtual, r1
-
-	mul r1, r1, r0
-	sub r2, r3, r1
-	store colunaAtual, r2
-
+	loadn r0, #0
+	cmp r4, r0
+	jne fimAtivaSalto
+	
+	loadn r4, #5
+	jmp fimAtivaSalto
+	
+fimAtivaSalto:
 	pop r0
-	pop r1
-	pop r2
-	pop r4
 	rts
 
+zeraSalto:	;Usa r4 para guardar a variável salto
+	loadn r4, #0
+	rts
+	
+decSalto:
+    dec r4
+	rts
 ;---------Movimentacao-------------
 moveEsquerda:
     call ApagaObj			;Usa r3
@@ -339,7 +353,36 @@ moveDireita:
 
 moveCima:
     call ApagaObj			;Usa r3
-    call VaiCima			;Usa r3
+    call decSalto
+    
+    push r2
+    push r4
+    push r5
+    push r6
+    push r7
+    
+    loadn r2, #0
+	loadn r4, #Tela6Linha0
+	loadn r5, #0
+	loadn r6, #40
+	
+	;----Testa colisão com o teto--------
+	sub r5, r3, r6  ;r5 = posição acima do personagem
+	div r2, r5, r6  ;r2 = posição acima do personagem / 40 = linha de cima
+	add r4, r4, r2  ;r4 = r4 + r2 = 1º posicao da string acima dele
+	add r4, r4, r5  ;r4 = r4 + r5 = char acima dele
+	loadn r5, #37 ; #
+	loadi r7, r4
+	cmp r5, r7		;if ('#' == r7) para de subir
+    cne VaiCima			;Usa r3
+    
+    
+    pop r7
+    pop r6
+    pop r5
+    pop r4
+    pop r2
+    
     call ImprimePersonagem	;Usa r2, r3 e r4
     call Delay
     rts
@@ -359,10 +402,12 @@ moveBaixo:
 	loadn r6, #40
 	
 	;----Testa colisão com o chão--------
+
 	add r5, r3, r6  ; R4 = pos de baixo do persnagem ;;
 	div r2, r5, r6  ;R1 = pos de baixo o personagem / 40 = linha de baixo
 	add r4, r4, r2  ;R3 = R3 + R1 = 1º posicao da string abaixo dele
 	add r4, r4, r5  ;R3 = R3 + 41 = 
+  
 	loadn r5, #37 ; #
 	loadi r7, r4
 	cmp r5, r7		;if ('#' == R6) para de cair
@@ -386,7 +431,7 @@ VaiBaixo:
 	rts
 
 VaiCima:
-	loadn r1, #160
+	loadn r1, #40
 	sub r3, r3, r1
 	rts
 

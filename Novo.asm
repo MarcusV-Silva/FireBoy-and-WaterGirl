@@ -36,6 +36,7 @@ main:
 	call zeraSalto	;Inicializa a variável salto como 0
 	
 	call Nivel1
+	
 Nivel1:
 	;Lê o teclado e atualiza posição
 	call movimentaPersonagens
@@ -116,7 +117,7 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
     load r0, saltar
     loadn r4, #0
     cmp r0, r4
-    cgr moveCima
+    cne moveCima
     
 	store posicaoFireBoy, r3	;Atualiza a variável de posição do Fireboy
 
@@ -144,6 +145,13 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
    	store posicaoWaterGirl, r3	;Atualiza a variável de posição da WhaterGirl
 
     pop r3	;Recupera o valor anterior do r3
+	rts
+
+ativaSalto:
+	push r0
+	loadn r0, #5
+	store saltar, r0
+	pop r0
 	rts
 
 zeraSalto:
@@ -251,12 +259,12 @@ moveCima:
 	cmp r5, r7		;if ('#' == R6) para de cair
     cne VaiCima			;Usa r3
     
-    cmp r5, r7
-    cne zeraSalto
-    
     loadn r2, #saltar
     dec r2
     store saltar, r2
+    
+    cmp r5, r7
+    cne zeraSalto
     
     pop r7
     pop r6
@@ -322,13 +330,6 @@ VaiDireita:
     inc r3
     rts
 ;---------------Subrotinas--------------------
-
-ativaSalto:
-	push r0
-	loadn r0, #5
-	store saltar, r0
-	pop r0
-	rts
 
 ;Imprime o personagem
 ImprimePersonagem:	;r2: Cor; r3: Posição ;r5: Caracter

@@ -3,7 +3,7 @@ jmp main
 letra: var #1
 posicaoFireBoy: var #1
 posicaoWaterGirl: var #1
-salto: var #1
+saltar: var #1
 
 main:
 	
@@ -33,8 +33,7 @@ main:
     loadn r5, #'$'				;Caracter  que sera imprimido
     call ImprimePersonagem	;Usa r2, r3 e r4
  	
-	loadn r0, #0
-	store salto, r0	;Inicializa a variável salto como 0
+	call zeraSalto	;Inicializa a variável salto como 0
 	
 	call Nivel1
 Nivel1:
@@ -58,16 +57,21 @@ pressioneE:
     call imprimeNivel
 
 gravidade:
+	push r0
+	push r1
 	push r2
 	push r5
+	
+	loadn r0, #0
+	loadn r1, #saltar
 
 	loadn r2, #2304				;Cor que sera impressa
     load r3, posicaoFireBoy		;Posição da impressao
     loadn r5, #'!'				;Caracter que sera impresso
 
-    call moveBaixo				;Move para baixo
+    cmp r1, r0
+    cne moveBaixo				;Move para baixo
     store posicaoFireBoy, r3	;Atualiza a posição do FireBoy
-
 
     loadn r2, #3072				;Cor que sera imprimida
     load r3, posicaoWaterGirl	;Posição da impressao
@@ -78,6 +82,8 @@ gravidade:
 
 	pop r5
 	pop r2
+	pop r1
+	pop r0
 	rts
 	
 movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
@@ -107,7 +113,10 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
     cmp r0, r1
     ceq moveBaixo
     
-    call moveCima
+    load r0, saltar
+    loadn r4, #0
+    cmp r0, r4
+    cgr moveCima
     
 	store posicaoFireBoy, r3	;Atualiza a variável de posição do Fireboy
 
@@ -137,11 +146,11 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
     pop r3	;Recupera o valor anterior do r3
 	rts
 
-mudaSalto:
+zeraSalto:
 	push r0
 	
-	loadn r0, #3
-	store salto, r0
+	loadn r0, #0
+	store saltar, r0
 	
 	pop r0
 	rts
@@ -242,6 +251,13 @@ moveCima:
 	cmp r5, r7		;if ('#' == R6) para de cair
     cne VaiCima			;Usa r3
     
+    cmp r5, r7
+    cne zeraSalto
+    
+    loadn r2, #saltar
+    dec r2
+    store saltar, r2
+    
     pop r7
     pop r6
     pop r5
@@ -309,8 +325,8 @@ VaiDireita:
 
 ativaSalto:
 	push r0
-	loadn r0, #3
-	store salto, r0
+	loadn r0, #5
+	store saltar, r0
 	pop r0
 	rts
 

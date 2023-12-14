@@ -14,19 +14,17 @@ colunaAtual: var #1
 porta1FaseAtual: var #1 ;271 --
 porta2FaseAtual: var #1 ;276 --
 
+Lava1Fase1: var #1 ; 28*40 + 9 = 1129
+Lava2Fase1: var #1 ; 22*40 + 18 = 898
+poca1Fase1: var #1 ; 28*40 + 21 = 1141
+
 numFaseAtual: var #1
 
 telaAtual: var #1
 
 main:
-	loadn r0, #1 
-	store numFaseAtual, r0
-
-	loadn r0, #271
-	store porta1FaseAtual, r0
-
-	loadn r0, #276
-	store porta2FaseAtual, r0
+	
+	call iniciaNivel1
 
 	loadn r1, #Tela1Linha0
     loadn r2, #2304
@@ -42,26 +40,23 @@ main:
 	
  	call pressioneE
 
-
 	loadn r3, #1043
 	store posicaoFireBoy, r3	;posicao inicial Fireboy
-  loadn r2, #2304				;Cor que sera impressa
-  loadn r5, #'!'				;Caracter que sera impresso
-  call ImprimePersonagem		;Usa r2, r3 e r4
+	loadn r2, #2304				;Cor que sera impressa
+	loadn r5, #'!'				;Caracter que sera impresso
+	call ImprimePersonagem		;Usa r2, r3 e r4
     
  	load r4, saltarFireBoy
 	call zeraSalto	;			Inicializa a variável salto como 0
 	
-	loadn r3, #883
-
 	loadn r1, #Tela6Linha0
 	store telaAtual, r1
 
 	loadn r3, #923
  	store posicaoWaterGirl, r3	;posicao inicial Wategirl
-  loadn r2, #1536				;Cor que sera imprimida
-  loadn r5, #'$'				;Caracter  que sera imprimido
-  call ImprimePersonagem		;Usa r2, r3 e r4
+	loadn r2, #1536				;Cor que sera imprimida
+	loadn r5, #'$'				;Caracter  que sera imprimido
+	call ImprimePersonagem		;Usa r2, r3 e r4
 	
  	load r4, saltarWaterGirl
 	call zeraSalto	;Inicializa a variável salto como 0
@@ -69,7 +64,10 @@ main:
 	jmp Nivel1
 
 Nivel1:
-  call verificaPorta
+    call verificaPorta
+	call verificaGirlNaLava1Nivel1
+	call verificaGirlNaLava2Nivel1
+	call verificaBoyNaPoca1Nivel1
 	call movimentaPersonagens
 	call Delay
 	call gravidade
@@ -80,14 +78,9 @@ Nivel1:
 
 Nivel2:
     call verificaPorta
-	;Lê o teclado e atualiza posição
 	call movimentaPersonagens
-	;Atualiza linha e coluna do FireBoy(por enquanto) *Testar*
-	;call atualizaPosicao
-
-	;Faz o FireBoy e a WaterGirl caírem
+	call Delay
 	call gravidade
-
 	call Delay
 
 	jmp Nivel2
@@ -111,6 +104,103 @@ verificaPorta2:
 
 	rts		
 
+verificaGirlNaLava1Nivel1:
+
+	load r1, posicaoWaterGirl
+	load r2, Lava1Fase1
+	
+	
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+
+    rts
+
+
+
+ReiniciaPosicaoDaFase1:
+	loadn r1, #1083
+	store posicaoWaterGirl, r1
+	
+	loadn r1, #923
+	store posicaoFireBoy, r1
+	jmp imprimeGameOver
+	rts
+
+
+verificaGirlNaLava2Nivel1:
+	load r1, posicaoWaterGirl
+	load r2, Lava2Fase1
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+
+    rts
+	
+verificaBoyNaPoca1Nivel1:
+	load r1, posicaoFireBoy
+	load r2, poca1Fase1
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	rts
+
 proximaTela:
 	load r0, numFaseAtual
 	inc r0
@@ -128,6 +218,24 @@ proximaTela:
 
 	rts
 
+
+iniciaNivel1:
+	loadn r0, #1 
+	store numFaseAtual, r0
+
+	loadn r0, #271
+	store porta1FaseAtual, r0
+
+	loadn r0, #276
+	store porta2FaseAtual, r0
+
+	loadn r0, #898
+	store Lava2Fase1, r0
+
+	loadn r0, #1141
+	store poca1Fase1, r0
+
+	rts
 
 iniciaNivel2:
     
@@ -174,24 +282,24 @@ gravidade:
 	
 
 	loadn r2, #2304				;Cor que sera impressa
-  load r3, posicaoFireBoy		;Posição da impressao
-  loadn r5, #'!'				;Caracter que sera impresso
-  load r4, saltarFireBoy
+	load r3, posicaoFireBoy		;Posição da impressao
+	loadn r5, #'!'				;Caracter que sera impresso
+	load r4, saltarFireBoy
 
 	loadn r0, #0
-  cmp r4, r0
-  ceq moveBaixo				;Move para baixo
-  store posicaoFireBoy, r3	;Atualiza a posição do FireBoy
+	cmp r4, r0
+	ceq moveBaixo				;Move para baixo
+	store posicaoFireBoy, r3	;Atualiza a posição do FireBoy
 
-  loadn r2, #1536  			;Cor que sera imprimida
-  load r3, posicaoWaterGirl	;Posição da impressao
-  loadn r5, #'$'				;Caracter que sera imprimido
-  load r4, saltarWaterGirl
+	loadn r2, #1536  			;Cor que sera imprimida
+	load r3, posicaoWaterGirl	;Posição da impressao
+	loadn r5, #'$'				;Caracter que sera imprimido
+	load r4, saltarWaterGirl
 
 	loadn r0, #0
-  cmp r4, r0
-  ceq moveBaixo				;Move para baixo
-  store posicaoWaterGirl, r3	;Atualiza a posição da WaterGirl
+	cmp r4, r0
+	ceq moveBaixo				;Move para baixo
+	store posicaoWaterGirl, r3	;Atualiza a posição da WaterGirl
 
 	pop r5
 	pop r2
@@ -362,7 +470,7 @@ moveCima:
     push r7
     
     loadn r2, #0
-	loadn r4, #Tela6Linha0
+	load r4, telaAtual
 	loadn r5, #0
 	loadn r6, #40
 	
@@ -903,11 +1011,11 @@ Tela2Linha7  : string "                                        "
 Tela2Linha8  : string "                                        "
 Tela2Linha9  : string " *                                      "
 Tela2Linha10 : string "                                        "
-Tela2Linha11 : string "                          ___           "
+Tela2Linha11 : string "                                        "
 Tela2Linha12 : string "                                        "
 Tela2Linha13 : string "                                        "
 Tela2Linha14 : string "                                        "
-Tela2Linha15 : string "             ___                        "
+Tela2Linha15 : string "                                        "
 Tela2Linha16 : string "                                 *      "
 Tela2Linha17 : string "                                        "
 Tela2Linha18 : string "                                        "
@@ -938,15 +1046,15 @@ Tela5Linha7  : string "                                        "
 Tela5Linha8  : string "                                        "
 Tela5Linha9  : string "                                        "
 Tela5Linha10 : string "                                        "
-Tela5Linha11 : string "                          ___           "
+Tela5Linha11 : string "                                        "
 Tela5Linha12 : string "                                        "
 Tela5Linha13 : string "                                        "
 Tela5Linha14 : string "                                        "
-Tela5Linha15 : string "         *   ___                        "
+Tela5Linha15 : string "         *                              "
 Tela5Linha16 : string "                                        "
 Tela5Linha17 : string "                                        "
 Tela5Linha18 : string "                                        "
-Tela5Linha19 : string "       /                                "
+Tela5Linha19 : string "                                        "
 Tela5Linha20 : string "                                        "
 Tela5Linha21 : string "                                        "
 Tela5Linha22 : string "                                        "
@@ -967,30 +1075,30 @@ Tela6Linha1  : string "%                                      %"
 Tela6Linha2  : string "%                                      %"
 Tela6Linha3  : string "%                                      %"
 Tela6Linha4  : string "%                                      %"
-Tela6Linha5  : string "%       %%%%%                          %"
+Tela6Linha5  : string "%                                      %"
 Tela6Linha6  : string "%         %%%%%                        %"
 Tela6Linha7  : string "%           %%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-Tela6Linha8  : string "%           %%%%%%%%%                  %"
+Tela6Linha8  : string "%             %%%%%%%                  %"
 Tela6Linha9  : string "%                                      %"
 Tela6Linha10 : string "%%%%%%%%                               %"
 Tela6Linha11 : string "%%%%%%%%                               %"
-Tela6Linha12 : string "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%[][][]%"
-Tela6Linha13 : string "%                                      %"
+Tela6Linha12 : string "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         %"
+Tela6Linha13 : string "%                            %%%       %"
 Tela6Linha14 : string "%                                      %"
 Tela6Linha15 : string "%                                      %"
-Tela6Linha16 : string "%[][]%%%%%%%%%%%%%%%%%%%%              %"
+Tela6Linha16 : string "%    %%%%%%%%%%%%%%%%%%%%              %"
 Tela6Linha17 : string "%                     %%%%%%%%%%%%%%%%%%"
 Tela6Linha18 : string "%                               %%%%%%%%"
 Tela6Linha19 : string "%                                      %"
 Tela6Linha20 : string "%%%%%%%%%%%%                           %"
 Tela6Linha21 : string "%%%%%%%%%%%%%                          %"
-Tela6Linha22 : string "%            %%%%%    %%%%%            %"
-Tela6Linha23 : string "%              %%%%%%%%%%%%%%          %"
-Tela6Linha24 : string "%%%%%%%%                   %%%%%%      %"
-Tela6Linha25 : string "%%%%%%%%                               %"
+Tela6Linha22 : string "%            %%%%%    %%%              %"
+Tela6Linha23 : string "%              %%%%%%%%%%%%            %"
+Tela6Linha24 : string "%%%%%%%                    %%          %"
+Tela6Linha25 : string "%%%%%%                                 %"
 Tela6Linha26 : string "%                                      %"
 Tela6Linha27 : string "%                                      %"
-Tela6Linha28 : string "%%%%%%%%       %%%%%%        %%%%%%%%%%%"
+Tela6Linha28 : string "%%%%%%%%%     %%%%%%%%     %%%%%%%%%%%%%"
 Tela6Linha29 : string "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 
 
@@ -1075,13 +1183,13 @@ Tela9Linha2  : string "%                                      %"
 Tela9Linha3  : string "%                                      %"
 Tela9Linha4  : string "%         %        %%%        %        %"
 Tela9Linha5  : string "%         %      %%%%%%%      %        %"
-Tela9Linha6  : string "%       %%%    %%%%%%%%%%%    %%%      %"
+Tela9Linha6  : string "%         %    %%%%%%%%%%%    %        %"
 Tela9Linha7  : string "%         %      %%%%%%%      %        %"
-Tela9Linha8  : string "%         %        %%%        %        %"
+Tela9Linha8  : string "%       %%%        %%%        %%%      %"
 Tela9Linha9  : string "%         %         %         %        %"
 Tela9Linha10 : string "%         %         %         %        %"
-Tela9Linha11 : string "%%%       %%%   %   %   %   %%%      %%%"
-Tela9Linha12 : string "%         %         %         %        %"
+Tela9Linha11 : string "%         %%%   %   %   %   %%%        %"
+Tela9Linha12 : string "%%%       %         %         %      %%%"
 Tela9Linha13 : string "%         %         %         %        %"
 Tela9Linha14 : string "%         %        %%%        %        %"
 Tela9Linha15 : string "%         %       %%%%%       %        %"

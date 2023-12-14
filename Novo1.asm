@@ -992,7 +992,7 @@ Tela2Linha24 : string "                                        "
 Tela2Linha25 : string "                                        "
 Tela2Linha26 : string "                                        "
 Tela2Linha27 : string "            *                           "
-Tela2Linha28 : string "         +++++                          "
+Tela2Linha28 : string "        +++++++                         "
 Tela2Linha29 : string "                                        "
 
 ;---------------------------------------------------------------

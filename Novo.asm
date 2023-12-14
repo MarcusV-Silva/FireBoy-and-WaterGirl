@@ -92,6 +92,7 @@ Nivel2:
 	call verificaBoyNaPoca1Nivel2
 	call verificaBoyNaPoca2Nivel2
 	call verificaBoyNaPoca3Nivel2
+
 	call movimentaPersonagens
 	call Delay
 	call gravidade
@@ -143,7 +144,7 @@ verificaGirlNaLava1Nivel1:
 	jeq ReiniciaPosicaoDaFase1
 
     rts
-
+    
 verificaGirlNaLava2Nivel1:
 	load r1, posicaoWaterGirl
 	load r2, Lava2Fase1
@@ -216,7 +217,10 @@ verificaGirlNaLava1Nivel2:
 	load r1, posicaoWaterGirl
 	load r2, Lava1Fase2
 	
-	
+verificaGirlNaLava2Nivel1:
+	load r1, posicaoWaterGirl
+	load r2, Lava2Fase1
+
 	cmp r1, r2
 	jeq ReiniciaPosicaoDaFase1
 	inc r2
@@ -242,6 +246,10 @@ verificaGirlNaLava2Nivel2:
 	cmp r1, r2
 	jeq ReiniciaPosicaoDaFase1
 	inc r2
+	
+verificaBoyNaPoca1Nivel1:
+	load r1, posicaoFireBoy
+	load r2, poca1Fase1
 
 	cmp r1, r2
 	jeq ReiniciaPosicaoDaFase1
@@ -253,7 +261,6 @@ verificaGirlNaLava2Nivel2:
 
 	cmp r1, r2
 	jeq ReiniciaPosicaoDaFase1
-
     rts
 
 verificaGirlNaLava3Nivel2:
@@ -271,7 +278,6 @@ verificaGirlNaLava3Nivel2:
 
 	cmp r1, r2
 	jeq ReiniciaPosicaoDaFase1
-
     rts
 
 verificaBoyNaPoca1Nivel2:
@@ -310,7 +316,7 @@ verificaBoyNaPoca2Nivel2:
 	cmp r1, r2
 	jeq ReiniciaPosicaoDaFase1
 	inc r2
-		
+
 	cmp r1, r2
 	jeq ReiniciaPosicaoDaFase1
 	inc r2
@@ -329,6 +335,10 @@ verificaBoyNaPoca3Nivel2:
 	jeq ReiniciaPosicaoDaFase1
 	inc r2
 		
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
 	cmp r1, r2
 	jeq ReiniciaPosicaoDaFase1
 	inc r2

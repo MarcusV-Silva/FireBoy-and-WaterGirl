@@ -168,14 +168,72 @@ atualizaPosicao:
 ;---------Movimentacao-------------
 moveEsquerda:
     call ApagaObj			;Usa r3
-    call VaiEsquerda		;Usa r3
+    
+	push r2
+    push r4
+    push r5
+    push r6
+    push r7
+    
+    loadn r2, #0
+	loadn r4, #Tela6Linha0
+	loadn r5, #0
+	loadn r6, #40
+	
+	;----Testa colisão com o chão--------
+	add r5, r3, r6  ; R4 = pos de baixo do mario ;;
+	div r2, r5, r6  ;R1 = posMario de baixo / 40 = linha de baixo
+	add r4, r4, r2  ;R3 = R3 + R1 = 1º posicao da string abaixo dele
+	add r4, r4, r5  ;R3 = R3 + 41 = 
+	loadn r2, #42
+	sub r4, r4, r2
+	loadn r5, #37 ; #
+	loadi r7, r4
+	cmp r5, r7		;if ('#' == R6) para de cair
+    cne VaiEsquerda			;Usa r3
+    
+    pop r7
+    pop r6
+    pop r5
+    pop r4
+    pop r2
+    
     call ImprimePersonagem	;Usa r2, r3 e r4
     call Delay
     rts
 
 moveDireita:
     call ApagaObj			;Usa r3
-    call VaiDireita			;Usa r3
+    
+	push r2
+    push r4
+    push r5
+    push r6
+    push r7
+    
+    loadn r2, #0
+	loadn r4, #Tela6Linha0
+	loadn r5, #0
+	loadn r6, #40
+	
+	;----Testa colisão com o chão--------
+	add r5, r3, r6  ;
+	div r2, r5, r6  ;
+	add r4, r4, r2  ;
+	add r4, r4, r5  ;
+	loadn r2, #40
+	sub r4, r4, r2
+	loadn r5, #37   ;
+	loadi r7, r4
+	cmp r5, r7		;
+    cne VaiDireita			;Usa r3
+    
+    pop r7
+    pop r6
+    pop r5
+    pop r4
+    pop r2
+    
     call ImprimePersonagem	;Usa r2, r3 e r4
     call Delay
     rts
@@ -190,8 +248,6 @@ moveCima:
 moveBaixo:
     call ApagaObj			;Usa r3
     
-    ; r1 = r2, r3 = r4, r4 = r5, r2 = r6
-    
     push r2
     push r4
     push r5
@@ -204,7 +260,7 @@ moveBaixo:
 	loadn r6, #40
 	
 	;----Testa colisão com o chão--------
-	add r5, r3, r6  ; R4 = pos de baixo do mario
+	add r5, r3, r6  ; R4 = pos de baixo do mario ;;
 	div r2, r5, r6  ;R1 = posMario de baixo / 40 = linha de baixo
 	add r4, r4, r2  ;R3 = R3 + R1 = 1º posicao da string abaixo dele
 	add r4, r4, r5  ;R3 = R3 + 41 = 

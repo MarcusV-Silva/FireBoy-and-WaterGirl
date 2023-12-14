@@ -18,6 +18,14 @@ Lava1Fase1: var #1 ; 28*40 + 9 = 1129
 Lava2Fase1: var #1 ; 22*40 + 18 = 898
 poca1Fase1: var #1 ; 28*40 + 21 = 1141
 
+Lava1Fase2: var #1 ; 28*40 + 27 = 1147
+Lava2Fase2: var #1 ; 23*40 + 5 = 925
+Lava3Fase2: var #1 ; 11*40 + 9 = 449
+
+poca1Fase2: var #1 ; 28*40 + 8 = 1128
+poca2Fase2: var #1 ; 23*40 + 31 = 951
+poca3Fase2: var #1 ; 11*40 + 25 = 465
+
 numFaseAtual: var #1
 
 telaAtual: var #1
@@ -78,6 +86,13 @@ Nivel1:
 
 Nivel2:
     call verificaPorta
+	call verificaGirlNaLava1Nivel2
+	call verificaGirlNaLava2Nivel2
+	call verificaGirlNaLava3Nivel2
+	call verificaBoyNaPoca1Nivel2
+	call verificaBoyNaPoca2Nivel2
+	call verificaBoyNaPoca3Nivel2
+
 	call movimentaPersonagens
 	call Delay
 	call gravidade
@@ -129,19 +144,7 @@ verificaGirlNaLava1Nivel1:
 	jeq ReiniciaPosicaoDaFase1
 
     rts
-
-
-
-ReiniciaPosicaoDaFase1:
-	loadn r1, #1083
-	store posicaoWaterGirl, r1
-	
-	loadn r1, #923
-	store posicaoFireBoy, r1
-	jmp imprimeGameOver
-	rts
-
-
+    
 verificaGirlNaLava2Nivel1:
 	load r1, posicaoWaterGirl
 	load r2, Lava2Fase1
@@ -201,6 +204,147 @@ verificaBoyNaPoca1Nivel1:
 
 	rts
 
+ReiniciaPosicaoDaFase1:
+	loadn r1, #1083
+	store posicaoWaterGirl, r1
+	
+	loadn r1, #923
+	store posicaoFireBoy, r1
+	jmp imprimeGameOver
+	rts
+
+verificaGirlNaLava1Nivel2:
+	load r1, posicaoWaterGirl
+	load r2, Lava1Fase2
+	
+verificaGirlNaLava2Nivel1:
+	load r1, posicaoWaterGirl
+	load r2, Lava2Fase1
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+
+    rts
+
+verificaGirlNaLava2Nivel2:
+	load r1, posicaoWaterGirl
+	load r2, Lava2Fase2
+	
+	
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+	
+verificaBoyNaPoca1Nivel1:
+	load r1, posicaoFireBoy
+	load r2, poca1Fase1
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+    rts
+
+verificaGirlNaLava3Nivel2:
+	load r1, posicaoWaterGirl
+	load r2, Lava3Fase2
+	
+	
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+    rts
+
+verificaBoyNaPoca1Nivel2:
+	load r1, posicaoFireBoy
+	load r2, poca1Fase2
+		
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+		
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+		
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+		
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	
+	rts
+
+verificaBoyNaPoca2Nivel2:
+	load r1, posicaoFireBoy
+	load r2, poca2Fase2
+	
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+		
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+		
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	rts
+
+verificaBoyNaPoca3Nivel2:
+	load r1, posicaoFireBoy
+	load r2, poca3Fase2
+		
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+		
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+		
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	cmp r1, r2
+	jeq ReiniciaPosicaoDaFase1
+	inc r2
+
+	rts
+
 proximaTela:
 	load r0, numFaseAtual
 	inc r0
@@ -229,6 +373,9 @@ iniciaNivel1:
 	loadn r0, #276
 	store porta2FaseAtual, r0
 
+	loadn r0, #1129
+	store Lava1Fase1, r0
+
 	loadn r0, #898
 	store Lava2Fase1, r0
 
@@ -247,6 +394,25 @@ iniciaNivel2:
 
 	loadn r1, #Tela9Linha0
 	store telaAtual, r1
+
+	loadn r0, # 1147
+	store Lava1Fase2, r0
+
+	loadn r0, #925
+	store Lava2Fase2, r0
+
+	loadn r0, #449
+	store Lava3Fase2, r0
+
+	loadn r0, #1128
+	store poca1Fase2, r0
+
+	loadn r0, #951
+	store poca2Fase2, r0
+
+	loadn r0, #465
+	store poca3Fase2, r0
+
 
 	call imprimeNivel2
 

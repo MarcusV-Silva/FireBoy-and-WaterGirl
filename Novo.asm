@@ -6,8 +6,18 @@ posicaoWaterGirl: var #1
 linhaAtual: var #1
 colunaAtual: var #1
 
+Porta1Fase1: var #1 ;271
+Porta2Fase1: var #1 ;276
+
+
 main:
 	
+	loadn r0, #271
+	store Porta1Fase1, r0
+
+	loadn r0, #276
+	store Porta2Fase1, r0
+
 	loadn r1, #Tela1Linha0
     loadn r2, #256
     call ImprimeTela
@@ -37,16 +47,69 @@ main:
 	call Nivel1
 
 Nivel1:
+    call verificaPorta
 	;Lê o teclado e atualiza posição
 	call movimentaPersonagens
 	;Atualiza linha e coluna do FireBoy(por enquanto) *Testar*
-	call atualizaPosicao
+	;call atualizaPosicao
 
 	;Faz o FireBoy e a WaterGirl caírem
 	call gravidade
 
 	call Delay
+
 	jmp Nivel1
+
+
+Nivel2:
+    ;call verificaPorta
+	;Lê o teclado e atualiza posição
+	call movimentaPersonagens
+	;Atualiza linha e coluna do FireBoy(por enquanto) *Testar*
+	;call atualizaPosicao
+
+	;Faz o FireBoy e a WaterGirl caírem
+	call gravidade
+
+	call Delay
+
+	jmp Nivel2
+
+verificaPorta:
+
+	load r1, posicaoWaterGirl
+	load r2, Porta1Fase1
+
+	cmp r1, r2
+	jeq verificaPorta2
+
+	rts
+
+verificaPorta2:
+    load r0, posicaoFireBoy
+	load r3, Porta2Fase1
+
+	cmp r0,r3
+	jeq iniciaNivel2
+
+	rts		
+
+iniciaNivel2:
+	call imprimeNivel2
+
+	loadn r3, #1082
+	store posicaoFireBoy, r3	;posicao inicial Fireboy
+    loadn r2, #2304				;Cor que sera impressa
+    loadn r5, #'$'				;Caracter que sera impresso
+    call ImprimePersonagem	;Usa r2, r3 e r4
+
+	loadn r3, #1117
+ 	store posicaoWaterGirl, r3	;posicao inicial Wategirl
+    loadn r2, #3072				;Cor que sera imprimida
+    loadn r5, #'$'				;Caracter  que sera imprimido
+    call ImprimePersonagem	;Usa r2, r3 e r4
+
+	jmp Nivel2
 
 pressioneE:
     
@@ -56,7 +119,7 @@ pressioneE:
     loadn r0, #'e'
     cmp r0, r1
     jne pressioneE		;compare not equal => se a tecla não foi digitada continua no loop
-    call imprimeNivel
+    call imprimeNivel1
 
 gravidade:
 	push r0
@@ -72,13 +135,11 @@ gravidade:
     call moveBaixo				;Move para baixo
     store posicaoFireBoy, r3	;Atualiza a posição do FireBoy
 
-
     loadn r2, #3072				;Cor que sera imprimida
     load r3, posicaoWaterGirl	;Posição da impressao
     loadn r5, #'$'				;Caracter que sera imprimido
 
-    cmp r3, r0					;Se não passar do chão
-    cle moveBaixo				;Move para baixo
+    call moveBaixo				;Move para baixo
     store posicaoWaterGirl, r3	;Atualiza a posição da WaterGirl
 
 	pop r5
@@ -324,7 +385,7 @@ DigLetra:	; Espera que uma tecla seja digitada e salva na variavel global "Letra
 	pop r0
 	rts
 
-imprimeNivel:
+imprimeNivel1:
 	loadn r1, #Tela2Linha0
 	loadn r2, #256
 	call ImprimeEApaga
@@ -336,7 +397,23 @@ imprimeNivel:
 	loadn r1, #Tela6Linha0
 	loadn r2, #2048
 	call ImprimeTela
-	
+
+	rts
+
+imprimeNivel2:
+	loadn r1, #Tela7Linha0
+	loadn r2, #256
+	call ImprimeEApaga
+
+	loadn r1, #Tela8Linha0
+	loadn r2, #1536
+	call ImprimeTela
+
+	loadn r1, #Tela9Linha0
+	loadn r2, #2048
+	call ImprimeTela
+
+	rts
 
 ImprimeTela: 	;  Rotina de Impresao de Cenario na Tela Inteira
 	;  r1 = endereco onde comeca a primeira linha do Cenario
@@ -684,8 +761,8 @@ Tela4Linha29  :string "                                        "
 Tela2Linha0  : string "                                        "
 Tela2Linha1  : string "                                        "
 Tela2Linha2  : string "                                        "
-Tela2Linha3  : string "                                        "
-Tela2Linha4  : string "                                   ___  "
+Tela2Linha3  : string "                                   ___  "
+Tela2Linha4  : string "                                  |   | "
 Tela2Linha5  : string "                                  |   | "
 Tela2Linha6  : string "                *                 |   | "
 Tela2Linha7  : string "                                        "
@@ -719,8 +796,8 @@ Tela2Linha29 : string "                                        "
 Tela5Linha0  : string "                                        "
 Tela5Linha1  : string "                                        "
 Tela5Linha2  : string "                                        "
-Tela5Linha3  : string "                                        "
-Tela5Linha4  : string "          *                   ___       "
+Tela5Linha3  : string "                              ___       "
+Tela5Linha4  : string "          *                  |   |      "
 Tela5Linha5  : string "                             |   |      "
 Tela5Linha6  : string "                             |   |      "
 Tela5Linha7  : string "                                        "
@@ -774,10 +851,117 @@ Tela6Linha19 : string "%                                      %"
 Tela6Linha20 : string "%%%%%%%%%%%%                           %"
 Tela6Linha21 : string "%%%%%%%%%%%%%                          %"
 Tela6Linha22 : string "%            %%%%%    %%%%%            %"
-Tela6Linha23 : string "%              %%%%%%%%%%%             %"
-Tela6Linha24 : string "%%%%%%%%                               %"
+Tela6Linha23 : string "%              %%%%%%%%%%%%%%          %"
+Tela6Linha24 : string "%%%%%%%%                   %%%%%%      %"
 Tela6Linha25 : string "%%%%%%%%                               %"
 Tela6Linha26 : string "%                                      %"
 Tela6Linha27 : string "%                                      %"
 Tela6Linha28 : string "%%%%%%%%       %%%%%%        %%%%%%%%%%%"
 Tela6Linha29 : string "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+
+
+;---------------------------------------------------------------
+;			Nível 2 (Lava)
+;----------------------------------------------------------------
+
+Tela7Linha0  : string "                                        "
+Tela7Linha1  : string "                                        "
+Tela7Linha2  : string "                                        "
+Tela7Linha3  : string "                                        "
+Tela7Linha4  : string "                                        "
+Tela7Linha5  : string "                                        "
+Tela7Linha6  : string "            *                           "
+Tela7Linha7  : string "                                        "
+Tela7Linha8  : string "                                        "
+Tela7Linha9  : string "                                        "
+Tela7Linha10 : string "                                        "
+Tela7Linha11 : string "             +++                        "
+Tela7Linha12 : string "                                        "
+Tela7Linha13 : string "             ___                        "
+Tela7Linha14 : string "            |   |                       "
+Tela7Linha15 : string "        /   |   |                       "
+Tela7Linha16 : string "                                        "
+Tela7Linha17 : string "                                        "
+Tela7Linha18 : string "               *                        "
+Tela7Linha19 : string "                                        "
+Tela7Linha20 : string "                                        "
+Tela7Linha21 : string "                                        "
+Tela7Linha22 : string "                                        "
+Tela7Linha23 : string "  /                                     "
+Tela7Linha24 : string "     ++++                               "
+Tela7Linha25 : string "                                        "
+Tela7Linha26 : string "                                        "
+Tela7Linha27 : string "                             *          "
+Tela7Linha28 : string "                         ++++++++       "
+Tela7Linha29 : string "                                        "
+
+;---------------------------------------------------------------
+;			Nível 2 (Agua)
+;----------------------------------------------------------------
+
+Tela8Linha0  : string "                                        "
+Tela8Linha1  : string "                                        "
+Tela8Linha2  : string "                                        "
+Tela8Linha3  : string "                                        "
+Tela8Linha4  : string "                                        "
+Tela8Linha5  : string "                                        "
+Tela8Linha6  : string "                            *           "
+Tela8Linha7  : string "                                        "
+Tela8Linha8  : string "                                        "
+Tela8Linha9  : string "                                        "
+Tela8Linha10 : string "                                        "
+Tela8Linha11 : string "                         +++            "
+Tela8Linha12 : string "                                        "
+Tela8Linha13 : string "                         ___            "
+Tela8Linha14 : string "                        |   |           "
+Tela8Linha15 : string "                        |   |   /       "
+Tela8Linha16 : string "                                        "
+Tela8Linha17 : string "                                        "
+Tela8Linha18 : string "                         *              "
+Tela8Linha19 : string "                                        "
+Tela8Linha20 : string "                                        "
+Tela8Linha21 : string "                                        "
+Tela8Linha22 : string "                                        "
+Tela8Linha23 : string "                                    /   "
+Tela8Linha24 : string "                               ++++     "
+Tela8Linha25 : string "                                        "
+Tela8Linha26 : string "                                        "
+Tela8Linha27 : string "           *                            "
+Tela8Linha28 : string "       ++++++++                         "
+Tela8Linha29 : string "                                        "
+
+
+;---------------------------------------------------------------
+;			Nível 2 (Cenário)
+;----------------------------------------------------------------
+
+Tela9Linha0  : string "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+Tela9Linha1  : string "%                                      %"
+Tela9Linha2  : string "%      %%%%%%%%%%%%   %%%%%%%%%%%%     %"
+Tela9Linha3  : string "%         %                   %        %"
+Tela9Linha4  : string "%         %        %%%        %        %"
+Tela9Linha5  : string "%         %      %%%%%%%      %        %"
+Tela9Linha6  : string "%         %    %%%%%%%%%%%    %        %"
+Tela9Linha7  : string "%         %      %%%%%%%      %        %"
+Tela9Linha8  : string "%         %        %%%        %        %"
+Tela9Linha9  : string "%         %         %         %        %"
+Tela9Linha10 : string "%         %         %         %        %"
+Tela9Linha11 : string "%         %%%   %   %   %   %%%        %"
+Tela9Linha12 : string "%[][][]   %         %         %  [][][]%"
+Tela9Linha13 : string "%         %         %         %        %"
+Tela9Linha14 : string "%         %        %%%        %        %"
+Tela9Linha15 : string "%         %       %%%%%       %        %"
+Tela9Linha16 : string "%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%    %"
+Tela9Linha17 : string "%[][][]             %            [][][]%"
+Tela9Linha18 : string "%                                      %"
+Tela9Linha19 : string "%            %%%%%     %%%%%           %"
+Tela9Linha20 : string "%            %%%%%%%%%%%%%%%           %"
+Tela9Linha21 : string "%                                      %"
+Tela9Linha22 : string "%                                      %"
+Tela9Linha23 : string "%                                      %"
+Tela9Linha24 : string "%%%%%    %%%%              %%%%    %%%%%"
+Tela9Linha25 : string "%%%%%%%%%%%%%              %%%%%%%%%%%%%"
+Tela9Linha26 : string "%                 %%%%                 %"
+Tela9Linha27 : string "%               %%%%%%%%               %"
+Tela9Linha28 : string "%%%%%%%        %%%%%%%%%%        %%%%%%%"
+Tela9Linha29 : string "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"

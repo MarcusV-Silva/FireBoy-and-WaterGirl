@@ -1,14 +1,17 @@
 jmp main
 
 letra: var #1
+
 posicaoFireBoy: var #1
 posicaoWaterGirl: var #1
+
 linhaAtual: var #1
 colunaAtual: var #1
 
 Porta1Fase1: var #1 ;271
 Porta2Fase1: var #1 ;276
 
+telaAtual: var #1
 
 main:
 	
@@ -32,17 +35,20 @@ main:
 	
  	call pressioneE
 
+	loadn r1, #Tela6Linha0
+	store telaAtual, r1
+
 	loadn r3, #923
 	store posicaoFireBoy, r3	;posicao inicial Fireboy
     loadn r2, #2304				;Cor que sera impressa
     loadn r5, #'!'				;Caracter que sera impresso
-    call ImprimePersonagem	;Usa r2, r3 e r4
+    call ImprimePersonagem	    ;Usa r2, r3 e r4
 
 	loadn r3, #1083
  	store posicaoWaterGirl, r3	;posicao inicial Wategirl
-    loadn r2, #3072				;Cor que sera imprimida
+    loadn r2, #1536				;Cor que sera imprimida
     loadn r5, #'$'				;Caracter  que sera imprimido
-    call ImprimePersonagem	;Usa r2, r3 e r4
+    call ImprimePersonagem	    ;Usa r2, r3 e r4
  	
 	call Nivel1
 
@@ -95,6 +101,10 @@ verificaPorta2:
 	rts		
 
 iniciaNivel2:
+    
+	loadn r1, #Tela9Linha0
+	store telaAtual, r1
+
 	call imprimeNivel2
 
 	loadn r3, #1082
@@ -105,7 +115,7 @@ iniciaNivel2:
 
 	loadn r3, #1117
  	store posicaoWaterGirl, r3	;posicao inicial Wategirl
-    loadn r2, #3072				;Cor que sera imprimida
+    loadn r2, #1536				;Cor que sera imprimida
     loadn r5, #'$'				;Caracter  que sera imprimido
     call ImprimePersonagem	;Usa r2, r3 e r4
 
@@ -135,7 +145,7 @@ gravidade:
     call moveBaixo				;Move para baixo
     store posicaoFireBoy, r3	;Atualiza a posição do FireBoy
 
-    loadn r2, #3072				;Cor que sera imprimida
+    loadn r2, #1536  			;Cor que sera imprimida
     load r3, posicaoWaterGirl	;Posição da impressao
     loadn r5, #'$'				;Caracter que sera imprimido
 
@@ -177,7 +187,7 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
 	store posicaoFireBoy, r3	;Atualiza a variável de posição do Fireboy
 
 	;Movimento WaterGirl
-    loadn r2, #3072				;Cor que sera imprimida
+    loadn r2, #1536				;Cor que sera imprimida
     load r3, posicaoWaterGirl	;Posição da impressao
     loadn r5, #'$'				;Caracter  que sera imprimido
 
@@ -236,7 +246,7 @@ moveEsquerda:
     push r7
     
     loadn r2, #0
-	loadn r4, #Tela6Linha0
+	load r4, telaAtual
 	loadn r5, #0
 	loadn r6, #40
 	
@@ -272,7 +282,7 @@ moveDireita:
     push r7
     
     loadn r2, #0
-	loadn r4, #Tela6Linha0
+	load r4, telaAtual
 	loadn r5, #0
 	loadn r6, #40
 	
@@ -315,7 +325,7 @@ moveBaixo:
     push r7
     
     loadn r2, #0
-	loadn r4, #Tela6Linha0
+	load r4, telaAtual
 	loadn r5, #0
 	loadn r6, #40
 	
@@ -637,7 +647,7 @@ Delay:
 
 	Loadn R1, #15
    	Delay_volta2:
-		Loadn R0, #10000		; Intensidade do Delay
+		Loadn R0, #40000		; Intensidade do Delay
 
    		Delay_volta1:
 			dec R0
@@ -661,7 +671,7 @@ Tela1Linha4  : string "                                        "
 Tela1Linha5  : string "                                        "
 Tela1Linha6  : string "                                        "
 Tela1Linha7  : string "                                        "
-Tela1Linha8  : string "          Fireboy                       "
+Tela1Linha8  : string "          FIREBOY                       "
 Tela1Linha9  : string "                                        "
 Tela1Linha10 : string "                                        "
 Tela1Linha11 : string "                                        "
@@ -696,7 +706,7 @@ Tela3Linha4  : string "                                        "
 Tela3Linha5  : string "                                        "
 Tela3Linha6  : string "                                        "
 Tela3Linha7  : string "                                        "
-Tela3Linha8  : string "                    Watergirl           "
+Tela3Linha8  : string "                    WATERGIRL           "
 Tela3Linha9  : string "                                        "
 Tela3Linha10 : string "                                        "
 Tela3Linha11 : string "                                        "
@@ -750,7 +760,7 @@ Tela4Linha23 : string "                                        "
 Tela4Linha24 : string "                                        "
 Tela4Linha25 : string "                                        "
 Tela4Linha26 : string "                                        "
-Tela4Linha27 : string "      Pressione 'e' para iniciar        "
+Tela4Linha27 : string "      Pressione `e' para iniciar        "
 Tela4Linha28 : string "                                        "
 Tela4Linha29  :string "                                        "
 
@@ -761,7 +771,7 @@ Tela4Linha29  :string "                                        "
 Tela2Linha0  : string "                                        "
 Tela2Linha1  : string "                                        "
 Tela2Linha2  : string "                                        "
-Tela2Linha3  : string "                                   ___  "
+Tela2Linha3  : string "                                  _____ "
 Tela2Linha4  : string "                                  |   | "
 Tela2Linha5  : string "                                  |   | "
 Tela2Linha6  : string "                *                 |   | "
@@ -796,7 +806,7 @@ Tela2Linha29 : string "                                        "
 Tela5Linha0  : string "                                        "
 Tela5Linha1  : string "                                        "
 Tela5Linha2  : string "                                        "
-Tela5Linha3  : string "                              ___       "
+Tela5Linha3  : string "                             _____      "
 Tela5Linha4  : string "          *                  |   |      "
 Tela5Linha5  : string "                             |   |      "
 Tela5Linha6  : string "                             |   |      "
@@ -876,8 +886,8 @@ Tela7Linha8  : string "                                        "
 Tela7Linha9  : string "                                        "
 Tela7Linha10 : string "                                        "
 Tela7Linha11 : string "             +++                        "
-Tela7Linha12 : string "                                        "
-Tela7Linha13 : string "             ___                        "
+Tela7Linha12 : string "            _____                       "
+Tela7Linha13 : string "            |   |                       "
 Tela7Linha14 : string "            |   |                       "
 Tela7Linha15 : string "        /   |   |                       "
 Tela7Linha16 : string "                                        "
@@ -911,8 +921,8 @@ Tela8Linha8  : string "                                        "
 Tela8Linha9  : string "                                        "
 Tela8Linha10 : string "                                        "
 Tela8Linha11 : string "                         +++            "
-Tela8Linha12 : string "                                        "
-Tela8Linha13 : string "                         ___            "
+Tela8Linha12 : string "                        _____           "
+Tela8Linha13 : string "                        |   |           "
 Tela8Linha14 : string "                        |   |           "
 Tela8Linha15 : string "                        |   |   /       "
 Tela8Linha16 : string "                                        "
@@ -937,25 +947,25 @@ Tela8Linha29 : string "                                        "
 
 Tela9Linha0  : string "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 Tela9Linha1  : string "%                                      %"
-Tela9Linha2  : string "%      %%%%%%%%%%%%   %%%%%%%%%%%%     %"
-Tela9Linha3  : string "%         %                   %        %"
+Tela9Linha2  : string "%                                      %"
+Tela9Linha3  : string "%                                      %"
 Tela9Linha4  : string "%         %        %%%        %        %"
 Tela9Linha5  : string "%         %      %%%%%%%      %        %"
-Tela9Linha6  : string "%         %    %%%%%%%%%%%    %        %"
+Tela9Linha6  : string "%       %%%    %%%%%%%%%%%    %%%      %"
 Tela9Linha7  : string "%         %      %%%%%%%      %        %"
 Tela9Linha8  : string "%         %        %%%        %        %"
 Tela9Linha9  : string "%         %         %         %        %"
 Tela9Linha10 : string "%         %         %         %        %"
-Tela9Linha11 : string "%         %%%   %   %   %   %%%        %"
-Tela9Linha12 : string "%[][][]   %         %         %  [][][]%"
+Tela9Linha11 : string "%%%       %%%   %   %   %   %%%      %%%"
+Tela9Linha12 : string "%         %         %         %        %"
 Tela9Linha13 : string "%         %         %         %        %"
 Tela9Linha14 : string "%         %        %%%        %        %"
 Tela9Linha15 : string "%         %       %%%%%       %        %"
 Tela9Linha16 : string "%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%    %"
-Tela9Linha17 : string "%[][][]             %            [][][]%"
+Tela9Linha17 : string "%                   %                  %"
 Tela9Linha18 : string "%                                      %"
 Tela9Linha19 : string "%            %%%%%     %%%%%           %"
-Tela9Linha20 : string "%            %%%%%%%%%%%%%%%           %"
+Tela9Linha20 : string "%%%%         %%%%%%%%%%%%%%%        %%%%"
 Tela9Linha21 : string "%                                      %"
 Tela9Linha22 : string "%                                      %"
 Tela9Linha23 : string "%                                      %"

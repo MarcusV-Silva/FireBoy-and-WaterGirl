@@ -108,10 +108,6 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r4, r5
     loadn r5, #'!'				;Caracter que sera impresso
     load r4, saltarFireBoy
 
-    loadn r0, #0
-    cmp r0, r4
-    cne moveCima
-
     loadn r0, #'a'
     cmp r0, r1
     ceq moveEsquerda
@@ -124,6 +120,10 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r4, r5
     cmp r0, r1
     ceq ativaSalto
     
+    loadn r0, #0
+    cmp r0, r4
+    cne moveCima
+    
     store saltarFireBoy, r4
 	store posicaoFireBoy, r3	;Atualiza a variável de posição do Fireboy
 
@@ -132,10 +132,6 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r4, r5
     load r3, posicaoWaterGirl	;Posição da impressao
     loadn r5, #'$'				;Caracter  que sera imprimido
     load r4, saltarWaterGirl
-
-    loadn r0, #0
-    cmp r0, r4
-    cne moveCima
 
 	loadn r0, #'j'
     cmp r0, r1
@@ -148,6 +144,10 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r4, r5
 	loadn r0, #'i'
     cmp r0, r1
     ceq ativaSalto
+    
+    loadn r0, #0
+    cmp r0, r4
+    cne moveCima
 
     store saltarWaterGirl, r4
    	store posicaoWaterGirl, r3	;Atualiza a variável de posição da WhaterGirl
@@ -263,14 +263,14 @@ moveCima:
 	loadn r5, #0
 	loadn r6, #40
 	
-	;----Testa colisão com o chão--------
+	;----Testa colisão com o teto--------
 	sub r5, r3, r6  ;r5 = posição acima do personagem
-	div r2, r5, r6  ;r2 = posição acima do personagem / 40 = linha de baixo
+	div r2, r5, r6  ;r2 = posição acima do personagem / 40 = linha de cima
 	add r4, r4, r2  ;r4 = r4 + r2 = 1º posicao da string acima dele
-	add r4, r4, r5  ;r4 = r4 + r5 = 
+	add r4, r4, r5  ;r4 = r4 + r5 = char acima dele
 	loadn r5, #37 ; #
 	loadi r7, r4
-	cmp r5, r7		;if ('#' == r7) para de cair
+	cmp r5, r7		;if ('#' == r7) para de subir
     cne VaiCima			;Usa r3
     
     
@@ -299,10 +299,10 @@ moveBaixo:
 	loadn r6, #40
 	
 	;----Testa colisão com o chão--------
-	add r5, r3, r6  ; R4 = pos de baixo do mario ;;
-	div r2, r5, r6  ;R1 = posMario de baixo / 40 = linha de baixo
-	add r4, r4, r2  ;R3 = R3 + R1 = 1º posicao da string abaixo dele
-	add r4, r4, r5  ;R3 = R3 + 41 = 
+	add r5, r3, r6  ;r5 = posição de baixo do personagem
+	div r2, r5, r6  ;r2 = posMario de baixo / 40 = linha de baixo
+	add r4, r4, r2  ;r4 = r4 + r2 = 1º posicao da string abaixo dele
+	add r4, r4, r5  ;r4 = r4 + r5 = 
 	loadn r5, #37 ; #
 	loadi r7, r4
 	cmp r5, r7		;if ('#' == R6) para de cair

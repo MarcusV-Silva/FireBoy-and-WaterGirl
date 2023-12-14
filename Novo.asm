@@ -25,13 +25,13 @@ main:
 	store posicaoFireBoy, r3	;posicao inicial Fireboy
     loadn r2, #2304				;Cor que sera impressa
     loadn r5, #'!'				;Caracter que sera impresso
-    call ImprimePersonagem	;Usa r2, r3 e r4
+    call ImprimePersonagem		;Usa r2, r3 e r4
 
 	loadn r3, #883
  	store posicaoWaterGirl, r3	;posicao inicial Wategirl
     loadn r2, #3072				;Cor que sera imprimida
     loadn r5, #'$'				;Caracter  que sera imprimido
-    call ImprimePersonagem	;Usa r2, r3 e r4
+    call ImprimePersonagem		;Usa r2, r3 e r4
  	
 	call zeraSalto	;Inicializa a variável salto como 0
 	
@@ -41,6 +41,7 @@ Nivel1:
 	;Lê o teclado e atualiza posição
 	call movimentaPersonagens
 	
+	call Delay
 	;Faz o FireBoy e a WaterGirl caírem
 	call gravidade
 
@@ -64,14 +65,14 @@ gravidade:
 	push r5
 	
 	loadn r0, #0
-	loadn r1, #saltar
+	load r1, saltar
 
 	loadn r2, #2304				;Cor que sera impressa
     load r3, posicaoFireBoy		;Posição da impressao
     loadn r5, #'!'				;Caracter que sera impresso
 
     cmp r1, r0
-    cne moveBaixo				;Move para baixo
+    ceq moveBaixo				;Move para baixo
     store posicaoFireBoy, r3	;Atualiza a posição do FireBoy
 
     loadn r2, #3072				;Cor que sera imprimida
@@ -110,10 +111,6 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
     cmp r0, r1
     ceq ativaSalto
 
-	loadn r0, #'s'
-    cmp r0, r1
-    ceq moveBaixo
-    
     load r0, saltar
     loadn r4, #0
     cmp r0, r4
@@ -138,10 +135,6 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
     cmp r0, r1
     ceq moveCima
 
-	loadn r0, #'k'
-    cmp r0, r1
-    ceq moveBaixo
-
    	store posicaoWaterGirl, r3	;Atualiza a variável de posição da WhaterGirl
 
     pop r3	;Recupera o valor anterior do r3
@@ -156,11 +149,17 @@ ativaSalto:
 
 zeraSalto:
 	push r0
-	
 	loadn r0, #0
 	store saltar, r0
-	
 	pop r0
+	rts
+	
+decSalto:
+	push r2
+    load r2, saltar
+    dec r2
+    store saltar, r2
+    pop r2
 	rts
 ;---------Movimentacao-------------
 moveEsquerda:
@@ -256,15 +255,10 @@ moveCima:
 	add r4, r4, r5  ;r4 = r4 + r5 = 
 	loadn r5, #37 ; #
 	loadi r7, r4
-	cmp r5, r7		;if ('#' == R6) para de cair
+	cmp r5, r7		;if ('#' == r7) para de cair
     cne VaiCima			;Usa r3
     
-    loadn r2, #saltar
-    dec r2
-    store saltar, r2
-    
-    cmp r5, r7
-    cne zeraSalto
+    cne decSalto
     
     pop r7
     pop r6

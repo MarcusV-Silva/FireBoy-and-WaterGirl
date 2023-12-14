@@ -25,7 +25,7 @@ main:
 	loadn r3, #923
 	store posicaoFireBoy, r3	;posicao inicial Fireboy
     loadn r2, #2304				;Cor que sera impressa
-    loadn r5, #'$'				;Caracter que sera impresso
+    loadn r5, #'!'				;Caracter que sera impresso
     call ImprimePersonagem	;Usa r2, r3 e r4
 
 	loadn r3, #1083
@@ -67,7 +67,7 @@ gravidade:
 
 	loadn r2, #2304				;Cor que sera impressa
     load r3, posicaoFireBoy		;Posição da impressao
-    loadn r5, #'$'				;Caracter que sera impresso
+    loadn r5, #'!'				;Caracter que sera impresso
 
     call moveBaixo				;Move para baixo
     store posicaoFireBoy, r3	;Atualiza a posição do FireBoy
@@ -95,7 +95,7 @@ movimentaPersonagens:	;Usa r0, r1, r2, r3, r5
 	;Movimento FireBoy
     loadn r2, #2304				;Cor que sera impressa
     load r3, posicaoFireBoy		;Posição da impressao
-    loadn r5, #'$'				;Caracter que sera impresso
+    loadn r5, #'!'				;Caracter que sera impresso
 
     loadn r0, #'a'
     cmp r0, r1
@@ -180,8 +180,8 @@ moveEsquerda:
 	loadn r6, #40
 	
 	;----Testa colisão com o chão--------
-	add r5, r3, r6  ; R4 = pos de baixo do mario ;;
-	div r2, r5, r6  ;R1 = posMario de baixo / 40 = linha de baixo
+	add r5, r3, r6  ; R5 = pos de baixo do personagem ;;
+	div r2, r5, r6  ;R1 = pos de baixo do personagem / 40 = linha de baixo
 	add r4, r4, r2  ;R3 = R3 + R1 = 1º posicao da string abaixo dele
 	add r4, r4, r5  ;R3 = R3 + 41 = 
 	loadn r2, #42
@@ -259,8 +259,8 @@ moveBaixo:
 	loadn r6, #40
 	
 	;----Testa colisão com o chão--------
-	add r5, r3, r6  ; R4 = pos de baixo do mario ;;
-	div r2, r5, r6  ;R1 = posMario de baixo / 40 = linha de baixo
+	add r5, r3, r6  ; R4 = pos de baixo do persnagem ;;
+	div r2, r5, r6  ;R1 = pos de baixo o personagem / 40 = linha de baixo
 	add r4, r4, r2  ;R3 = R3 + R1 = 1º posicao da string abaixo dele
 	add r4, r4, r5  ;R3 = R3 + 41 = 
 	loadn r5, #37 ; #
@@ -560,7 +560,7 @@ Delay:
 
 	Loadn R1, #15
    	Delay_volta2:
-		Loadn R0, #40000		; Intensidade do Delay
+		Loadn R0, #10000		; Intensidade do Delay
 
    		Delay_volta1:
 			dec R0

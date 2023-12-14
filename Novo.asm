@@ -48,7 +48,7 @@ main:
 	
  	call pressioneE
 
-	loadn r3, #270
+	loadn r3, #883
 	store posicaoFireBoy, r3	;posicao inicial Fireboy
 	loadn r2, #2304				;Cor que sera impressa
 	loadn r5, #'!'				;Caracter que sera impresso
@@ -60,7 +60,7 @@ main:
 	loadn r1, #Tela6Linha0
 	store telaAtual, r1
 
-	loadn r3, #269
+	loadn r3, #1043
  	store posicaoWaterGirl, r3	;posicao inicial Wategirl
 	loadn r2, #1536				;Cor que sera imprimida
 	loadn r5, #'$'				;Caracter  que sera imprimido

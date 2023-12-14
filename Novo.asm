@@ -8,22 +8,27 @@ posicaoWaterGirl: var #1
 linhaAtual: var #1
 colunaAtual: var #1
 
-Porta1Fase1: var #1 ;271
-Porta2Fase1: var #1 ;276
+porta1FaseAtual: var #1 ;271 --
+porta2FaseAtual: var #1 ;276 --
+
+numFaseAtual: var #1
 
 telaAtual: var #1
 
+
 main:
-	
+	loadn r0, #1 
+	store numFaseAtual, r0
+
 	loadn r0, #271
-	store Porta1Fase1, r0
+	store porta1FaseAtual, r0
 
 	loadn r0, #276
-	store Porta2Fase1, r0
+	store porta2FaseAtual, r0
 
 	loadn r1, #Tela1Linha0
-    loadn r2, #256
-    call ImprimeTela
+    loadn r2, #2304
+    call ImprimeEApaga
 
     loadn r1, #Tela3Linha0
     loadn r2, #1536
@@ -68,7 +73,7 @@ Nivel1:
 
 
 Nivel2:
-    ;call verificaPorta
+    call verificaPorta
 	;Lê o teclado e atualiza posição
 	call movimentaPersonagens
 	;Atualiza linha e coluna do FireBoy(por enquanto) *Testar*
@@ -84,7 +89,7 @@ Nivel2:
 verificaPorta:
 
 	load r1, posicaoWaterGirl
-	load r2, Porta1Fase1
+	load r2, porta1FaseAtual
 
 	cmp r1, r2
 	jeq verificaPorta2
@@ -93,15 +98,39 @@ verificaPorta:
 
 verificaPorta2:
     load r0, posicaoFireBoy
-	load r3, Porta2Fase1
+	load r3, porta2FaseAtual
 
 	cmp r0,r3
-	jeq iniciaNivel2
+	jeq proximaTela
 
 	rts		
 
+proximaTela:
+	load r0, numFaseAtual
+	inc r0
+	store numFaseAtual, r0
+
+	loadn r1, #2    ; tela 2
+	loadn r2, #3    ; tela 3
+	loadn r3, #4    ; tela 4
+
+	cmp r0,r1
+	jeq iniciaNivel2
+
+	cmp r0,r2
+	jeq imprimeGameOver
+
+	rts
+
+
 iniciaNivel2:
     
+	loadn r0, #626
+	store porta1FaseAtual, r0
+
+	loadn r0, #614
+	store porta2FaseAtual, r0
+
 	loadn r1, #Tela9Linha0
 	store telaAtual, r1
 
@@ -397,7 +426,7 @@ DigLetra:	; Espera que uma tecla seja digitada e salva na variavel global "Letra
 
 imprimeNivel1:
 	loadn r1, #Tela2Linha0
-	loadn r2, #256
+	loadn r2, #2304
 	call ImprimeEApaga
 
 	loadn r1, #Tela5Linha0
@@ -412,7 +441,7 @@ imprimeNivel1:
 
 imprimeNivel2:
 	loadn r1, #Tela7Linha0
-	loadn r2, #256
+	loadn r2, #2304
 	call ImprimeEApaga
 
 	loadn r1, #Tela8Linha0
@@ -424,6 +453,56 @@ imprimeNivel2:
 	call ImprimeTela
 
 	rts
+
+imprimeGameOver:
+	loadn r1, #Tela10Linha0
+	loadn r2, #2304
+	call ImprimeEApaga
+
+	loadn r1, #Tela11Linha0
+	loadn r2, #1536
+	call ImprimeTela
+
+	loadn r1, #Tela12Linha0
+	loadn r2, #2048
+	call ImprimeTela
+
+	call LeituraLoop
+    load r1, letra	;Carrega a letra digitada
+
+    loadn r0, #'f'
+    cmp r0, r1		
+    ceq imprimeCreditos
+
+	loadn r0, #'e'
+	cmp r0, r1
+	jeq main
+
+	rts
+
+imprimeCreditos:
+	loadn r1, #Tela13Linha0
+	loadn r2, #2048
+	call ImprimeEApaga
+	call imprimeCreditos
+	rts
+
+
+LeituraLoop:	; Espera que uma tecla seja digitada e salva na variavel global "Letra"
+	push r0
+	push r1
+	loadn r1, #255	; Se nao digitar nada vem 255
+
+	DigLetra_Loop:
+		inchar r0			; Le o teclado, se nada for digitado = 255
+		cmp r0, r1			;compara r0 com 255
+		jeq DigLetra_Loop	; Fica lendo ate' que digite uma tecla valida
+
+		store letra, r0			; Salva a tecla na variavel global "Letra"
+
+		pop r1
+		pop r0
+		rts
 
 ImprimeTela: 	;  Rotina de Impresao de Cenario na Tela Inteira
 	;  r1 = endereco onde comeca a primeira linha do Cenario
@@ -682,12 +761,12 @@ Tela1Linha15 : string "                                        "
 Tela1Linha16 : string "   Fireboy                              "
 Tela1Linha17 : string "                                        "
 Tela1Linha18 : string "  W - Pular                             "
-Tela1Linha19 : string "  A - Esquerda                          "
-Tela1Linha20 : string "  D - Direita                           "
+Tela1Linha19 : string "                                        "
+Tela1Linha20 : string "  A - Esquerda                          "
 Tela1Linha21 : string "                                        "
-Tela1Linha22 : string "       !                                "
+Tela1Linha22 : string "  D - Direita                           "
 Tela1Linha23 : string "                                        "
-Tela1Linha24 : string "                                        "
+Tela1Linha24 : string "        !                               "
 Tela1Linha25 : string "                                        "
 Tela1Linha26 : string "                                        "
 Tela1Linha27 : string "                                        "
@@ -714,15 +793,15 @@ Tela3Linha12 : string "                                        "
 Tela3Linha13 : string "                                        "
 Tela3Linha14 : string "                                        "
 Tela3Linha15 : string "                                        "
-Tela3Linha16 : string "                           Watergirl    "
+Tela3Linha16 : string "                            Watergirl   "
 Tela3Linha17 : string "                                        "
-Tela3Linha18 : string "                       I - Pular        "
-Tela3Linha19 : string "                       J - Esquerda     "
-Tela3Linha20 : string "                       L - Direita      "
+Tela3Linha18 : string "                        I - Pular       "
+Tela3Linha19 : string "                                        "
+Tela3Linha20 : string "                        J - Esquerda    "
 Tela3Linha21 : string "                                        "
-Tela3Linha22 : string "                              $         "
+Tela3Linha22 : string "                        L - Direita     "
 Tela3Linha23 : string "                                        "
-Tela3Linha24 : string "                                        "
+Tela3Linha24 : string "                              $         "
 Tela3Linha25 : string "                                        "
 Tela3Linha26 : string "                                        "
 Tela3Linha27 : string "                                        "
@@ -733,36 +812,36 @@ Tela3Linha29  :string "                                        "
 ;                       Texto em branco
 ;---------------------------------------------------------------
 
-Tela4Linha0  : string "                                        "
-Tela4Linha1  : string "                                        "
-Tela4Linha2  : string "                                        "
-Tela4Linha3  : string "                                        "
-Tela4Linha4  : string "                                        "
-Tela4Linha5  : string "                                        "
-Tela4Linha6  : string "                                        "
-Tela4Linha7  : string "                                        "
-Tela4Linha8  : string "                  e                     "
-Tela4Linha9  : string "                                        "
-Tela4Linha10 : string "                                        "
-Tela4Linha11 : string "               Controles                "
-Tela4Linha12 : string "                                        "
-Tela4Linha13 : string "                                        "
-Tela4Linha14 : string "                                        "
-Tela4Linha15 : string "                                        "
-Tela4Linha16 : string "                                        "
-Tela4Linha17 : string "                                        "
-Tela4Linha18 : string "                                        "
-Tela4Linha19 : string "                                        "
-Tela4Linha20 : string "                                        "
-Tela4Linha21 : string "                                        "
-Tela4Linha22 : string "                                        "
-Tela4Linha23 : string "                                        "
-Tela4Linha24 : string "                                        "
-Tela4Linha25 : string "                                        "
-Tela4Linha26 : string "                                        "
-Tela4Linha27 : string "      Pressione `e' para iniciar        "
-Tela4Linha28 : string "                                        "
-Tela4Linha29  :string "                                        "
+Tela4Linha0  : string "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+Tela4Linha1  : string "%                                      %"
+Tela4Linha2  : string "%                                      %"
+Tela4Linha3  : string "%                                      %"
+Tela4Linha4  : string "%                                      %"
+Tela4Linha5  : string "%                                      %"
+Tela4Linha6  : string "%                                      %"
+Tela4Linha7  : string "%                                      %"
+Tela4Linha8  : string "%                 e                    %"
+Tela4Linha9  : string "%                                      %"
+Tela4Linha10 : string "%                                      %"
+Tela4Linha11 : string "%              Controles               %"
+Tela4Linha12 : string "%                                      %"
+Tela4Linha13 : string "%                                      %"
+Tela4Linha14 : string "%                                      %"
+Tela4Linha15 : string "%                                      %"
+Tela4Linha16 : string "%                                      %"
+Tela4Linha17 : string "%                                      %"
+Tela4Linha18 : string "%                                      %"
+Tela4Linha19 : string "%                                      %"
+Tela4Linha20 : string "%                                      %"
+Tela4Linha21 : string "%                                      %"
+Tela4Linha22 : string "%                                      %"
+Tela4Linha23 : string "%                                      %"
+Tela4Linha24 : string "%                                      %"
+Tela4Linha25 : string "%                                      %"
+Tela4Linha26 : string "%                                      %"
+Tela4Linha27 : string "%     Pressione `E' para iniciar       %"
+Tela4Linha28 : string "%                                      %"
+Tela4Linha29  :string "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 
 ;---------------------------------------------------------------
 ;							Nível 1 (Lava)
@@ -975,3 +1054,144 @@ Tela9Linha26 : string "%                 %%%%                 %"
 Tela9Linha27 : string "%               %%%%%%%%               %"
 Tela9Linha28 : string "%%%%%%%        %%%%%%%%%%        %%%%%%%"
 Tela9Linha29 : string "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+
+
+;---------------------------------------------------------------
+;                       Texto em vermelho(GAME OVER)
+;---------------------------------------------------------------
+Tela10Linha0  : string "                                        "
+Tela10Linha1  : string "                                        "
+Tela10Linha2  : string "                                        "
+Tela10Linha3  : string "                                        "
+Tela10Linha4  : string "                                        "
+Tela10Linha5  : string "                                        "
+Tela10Linha6  : string "                                        "
+Tela10Linha7  : string "                                        "
+Tela10Linha8  : string "                                        "
+Tela10Linha9  : string "                                        "
+Tela10Linha10 : string "                                        "
+Tela10Linha11 : string "                                        "
+Tela10Linha12 : string "                                        "
+Tela10Linha13 : string "                                        "
+Tela10Linha14 : string "                                        "
+Tela10Linha15 : string "                                        "
+Tela10Linha16 : string "                                        "
+Tela10Linha17 : string "                                        "
+Tela10Linha18 : string "                         EXIT           "
+Tela10Linha19 : string "                                        "
+Tela10Linha20 : string "                                        "
+Tela10Linha21 : string "                                        "
+Tela10Linha22 : string "                                        "
+Tela10Linha23 : string "                                        "
+Tela10Linha24 : string "                                        "
+Tela10Linha25 : string "                                        "
+Tela10Linha26 : string "                                        "
+Tela10Linha27 : string "                                        "
+Tela10Linha28 : string "                                        "
+Tela10Linha29  :string "                                        "
+
+;---------------------------------------------------------------
+;                       Texto em azul(GAME OVER)
+;---------------------------------------------------------------
+
+Tela11Linha0  : string "                                        "
+Tela11Linha1  : string "                                        "
+Tela11Linha2  : string "                                        "
+Tela11Linha3  : string "                                        "
+Tela11Linha4  : string "                                        "
+Tela11Linha5  : string "                                        "
+Tela11Linha6  : string "                                        "
+Tela11Linha7  : string "                                        "
+Tela11Linha8  : string "                                        "
+Tela11Linha9  : string "                                        "
+Tela11Linha10 : string "                                        "
+Tela11Linha11 : string "                                        "
+Tela11Linha12 : string "                                        "
+Tela11Linha13 : string "                                        "
+Tela11Linha14 : string "                                        "
+Tela11Linha15 : string "                                        "
+Tela11Linha16 : string "                                        "
+Tela11Linha17 : string "                                        "
+Tela11Linha18 : string "           RETRY                        "
+Tela11Linha19 : string "                                        "
+Tela11Linha20 : string "                                        "
+Tela11Linha21 : string "                                        "
+Tela11Linha22 : string "                                        "
+Tela11Linha23 : string "                                        "
+Tela11Linha24 : string "                                        "
+Tela11Linha25 : string "                                        "
+Tela11Linha26 : string "                                        "
+Tela11Linha27 : string "                                        "
+Tela11Linha28 : string "                                        "
+Tela11Linha29  :string "                                        "
+
+;---------------------------------------------------------------
+;                       Texto em branco(GAME OVER)
+;---------------------------------------------------------------
+
+Tela12Linha0  : string "                                        "
+Tela12Linha1  : string "                                        "
+Tela12Linha2  : string "                                        "
+Tela12Linha3  : string "                                        "
+Tela12Linha4  : string "                                        "
+Tela12Linha5  : string "                                        "
+Tela12Linha6  : string "                                        "
+Tela12Linha7  : string "                                        "
+Tela12Linha8  : string "                                        "
+Tela12Linha9  : string "                                        " 
+Tela12Linha10 : string "                                        "
+Tela12Linha11 : string "                                        "
+Tela12Linha12 : string "   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   "
+Tela12Linha13 : string "   %                                %   "
+Tela12Linha14 : string "   %           GAME  OVER           %   "
+Tela12Linha15 : string "   %                                %   "
+Tela12Linha16 : string "   %                                %   "
+Tela12Linha17 : string "   %                                %   "
+Tela12Linha18 : string "   %   'E'           'F'            %   "
+Tela12Linha19 : string "   %                                %   "
+Tela12Linha20 : string "   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   "
+Tela12Linha21 : string "                                        "
+Tela12Linha22 : string "                                        "
+Tela12Linha23 : string "                                        "
+Tela12Linha24 : string "                                        "
+Tela12Linha25 : string "                                        "
+Tela12Linha26 : string "                                        "
+Tela12Linha27 : string "                                        "
+Tela12Linha28 : string "                                        "
+Tela12Linha29  :string "                                        "
+
+
+;---------------------------------------------------------------
+;                       Texto em branco(Credito)
+;---------------------------------------------------------------
+
+Tela13Linha0  : string "                                        "
+Tela13Linha1  : string "                                        "
+Tela13Linha2  : string "                                        "
+Tela13Linha3  : string "                                        "
+Tela13Linha4  : string "                                        "
+Tela13Linha5  : string "                                        "
+Tela13Linha6  : string "           !                $           "
+Tela13Linha7  : string "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+Tela13Linha8  : string "%                                      %"
+Tela13Linha9  : string "%              Creditos:               %"
+Tela13Linha10 : string "%                                      %"
+Tela13Linha11 : string "%          Andre Jacob Suaide          %"
+Tela13Linha12 : string "%       Felipe Aparecido da Silva      %"
+Tela13Linha13 : string "%         Gustavo Carvalho Araujo      %"
+Tela13Linha14 : string "%      Henrique de Oliveira Araujo     %"
+Tela13Linha15 : string "%       Marcus Vinicius da Silva       %"
+Tela13Linha16 : string "%        Oliver Kenzo Kobayashi        %"
+Tela13Linha17 : string "%      Rodrigo Rodrigues de Castro     %"
+Tela13Linha18 : string "%       Viktor Sergio Ferreira         %"
+Tela13Linha19 : string "%     Vitor Augusto Paiva de Brito     %"
+Tela13Linha20 : string "%         Yazid Alamou Bouari          %"
+Tela13Linha21 : string "%                                      %"
+Tela13Linha22 : string "%             ICMC - USP               %"
+Tela13Linha23 : string "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+Tela13Linha24 : string "                                        "
+Tela13Linha25 : string "                                        "
+Tela13Linha26 : string "                                        "
+Tela13Linha27 : string "                                        "
+Tela13Linha28 : string "                                        "
+Tela13Linha29 : string "                                        "

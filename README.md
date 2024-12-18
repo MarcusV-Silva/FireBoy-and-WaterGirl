@@ -46,7 +46,7 @@ Yazid Alamou Bouari
 
 &nbsp;&nbsp;&nbsp;&nbsp;A - Andar para a esquerda
 
-&nbsp;&nbsp;&nbsp;&nbsp;S - Esgueirar
+&nbsp;&nbsp;&nbsp;&nbsp;S - Agachar
 
 &nbsp;&nbsp;&nbsp;&nbsp;D - Andar para a direita
 
@@ -59,7 +59,7 @@ Yazid Alamou Bouari
 
 &nbsp;&nbsp;&nbsp;&nbsp;> - Andar para a direita
 
-&nbsp;&nbsp;&nbsp;&nbsp;V - Esgueirar
+&nbsp;&nbsp;&nbsp;&nbsp;V - Agachar
 
 ## Objetivo
 
